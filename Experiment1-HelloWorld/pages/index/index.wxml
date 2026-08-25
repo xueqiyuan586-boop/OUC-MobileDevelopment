@@ -1,0 +1,7 @@
+<view class="container">
+
+<text class="text">hello {{names[index]}}!</text>
+
+<button bindtap="onClick">change</button>
+
+</view>

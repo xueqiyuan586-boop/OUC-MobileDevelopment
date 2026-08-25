@@ -1,0 +1,73 @@
+<view class="page">
+
+<!-- AI生成名片 -->
+<image 
+  src="/images/profile-card.png"
+  class="banner"
+/>
+
+<!-- 关于我 -->
+<view class="section">
+
+  <text class="section-title">
+    01  ABOUT ME
+  </text>
+
+  <text class="content">
+    计算机专业学生，关注软件开发、
+    人工智能以及信息技术领域。
+  </text>
+
+</view>
+
+
+<!-- 专业技能 -->
+<view class="section">
+
+  <text class="section-title">
+    02  SKILLS
+  </text>
+
+  <view class="skill-box">
+
+    <text>Python</text>
+    <text>Java</text>
+    <text>微信小程序开发</text>
+    <text>数据结构与算法</text>
+
+  </view>
+
+</view>
+
+
+<!-- 项目经历 -->
+<view class="section">
+
+  <text class="section-title">
+    03  PROJECT
+  </text>
+
+
+  <text class="project-title">
+    校园管理系统开发
+  </text>
+
+  <text class="content">
+    负责系统功能设计、
+    页面开发以及数据库设计。
+  </text>
+
+
+  <text class="project-title">
+    Web应用设计与实现
+  </text>
+
+  <text class="content">
+    完成前端页面搭建与交互设计。
+  </text>
+
+
+</view>
+
+
+</view>
