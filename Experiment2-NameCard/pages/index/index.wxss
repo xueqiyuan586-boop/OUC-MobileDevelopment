@@ -196,3 +196,18 @@
   margin-bottom:15rpx;
   
   }
+  .share-btn {
+    width: 90%;
+    margin: 40rpx auto;
+    height: 88rpx;
+  
+    background-color: #222;
+    color: #ffffff;
+  
+    font-size: 28rpx;
+    border-radius: 16rpx;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

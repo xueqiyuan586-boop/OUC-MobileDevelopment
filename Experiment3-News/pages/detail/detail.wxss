@@ -1,0 +1,309 @@
+page {
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+
+
+/* 页面容器：自然文档流，不设固定高度、不裁切 */
+.detail-page {
+  min-height: 100vh;
+}
+
+
+/* =========================
+   文章主体
+   ========================= */
+
+.article {
+  padding: 40rpx 32rpx 0;
+
+  /* 底部预留固定操作栏 + iPhone 安全区的高度，
+     保证正文滚动到底后最后一行完整可见 */
+  padding-bottom: calc(200rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
+
+  box-sizing: border-box;
+}
+
+
+/* 标题：左对齐 */
+.article-title {
+  display: block;
+
+  text-align: left;
+
+  font-size: 44rpx;
+
+  line-height: 66rpx;
+
+  font-weight: 600;
+
+  color: #1a1a1a;
+}
+
+
+/* 来源与时间 */
+.article-meta {
+  display: flex;
+
+  align-items: center;
+
+  margin-top: 22rpx;
+
+  font-size: 24rpx;
+}
+
+
+.source {
+  color: #e1251b;
+}
+
+
+.dot {
+  margin: 0 14rpx;
+
+  color: #cccccc;
+}
+
+
+.date {
+  color: #999999;
+}
+
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+
+  background-color: #eeeeee;
+
+  margin: 28rpx 0 30rpx;
+}
+
+
+/* 新闻图片：宽度自适应 */
+.article-image {
+  width: 100%;
+
+  display: block;
+
+  background-color: #f5f5f5;
+}
+
+
+/* 正文：适合阅读的字号与行距 */
+.article-content {
+  margin-top: 36rpx;
+}
+
+
+.article-content text {
+  font-size: 32rpx;
+
+  line-height: 60rpx;
+
+  color: #333333;
+
+  letter-spacing: 1rpx;
+}
+
+
+/* =========================
+   上一篇 / 下一篇
+   ========================= */
+
+.pager {
+  margin-top: 56rpx;
+
+  border-top: 1rpx solid #eeeeee;
+}
+
+
+.pager-row {
+  display: flex;
+
+  align-items: center;
+
+  padding: 26rpx 0;
+
+  border-bottom: 1rpx solid #eeeeee;
+}
+
+
+.pager-row-hover {
+  background-color: #fafafa;
+}
+
+
+.pager-label {
+  flex-shrink: 0;
+
+  width: 96rpx;
+
+  font-size: 24rpx;
+
+  color: #999999;
+}
+
+
+.pager-title {
+  flex: 1;
+
+  min-width: 0;
+
+  font-size: 28rpx;
+
+  line-height: 40rpx;
+
+  color: #1a1a1a;
+
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
+
+  -webkit-line-clamp: 1;
+
+  overflow: hidden;
+}
+
+
+/* =========================
+   文章底部
+   ========================= */
+
+.article-footer {
+  margin-top: 40rpx;
+}
+
+
+.footer-line {
+  width: 56rpx;
+  height: 5rpx;
+
+  background-color: #e1251b;
+
+  margin-bottom: 16rpx;
+}
+
+
+.footer-text {
+  font-size: 23rpx;
+
+  color: #aaaaaa;
+}
+
+
+/* =========================
+   底部固定操作栏
+   ========================= */
+
+.bottom-bar {
+  position: fixed;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 10;
+
+  height: 100rpx;
+
+  /* 适配 iPhone 底部安全区（constant 兼容旧版 iOS） */
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+
+  background-color: #ffffff;
+
+  border-top: 1rpx solid #eeeeee;
+
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.04);
+
+  display: flex;
+
+  align-items: center;
+
+  box-sizing: content-box;
+}
+
+
+.bar-action {
+  flex: 1;
+
+  height: 100rpx;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+.bar-action-hover {
+  background-color: #fafafa;
+}
+
+
+.bar-divider {
+  width: 1rpx;
+  height: 48rpx;
+
+  background-color: #eeeeee;
+}
+
+
+/* CSS 小房子图标 */
+.home-icon {
+  position: relative;
+
+  width: 30rpx;
+  height: 24rpx;
+
+  margin-right: 10rpx;
+
+  background-color: #888888;
+}
+
+
+.home-icon::before {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: -14rpx;
+
+  transform: translateX(-50%);
+
+  border-left: 15rpx solid transparent;
+  border-right: 15rpx solid transparent;
+  border-bottom: 14rpx solid #888888;
+}
+
+
+.star-icon {
+  font-size: 34rpx;
+
+  line-height: 1;
+
+  color: #888888;
+
+  margin-right: 10rpx;
+}
+
+
+.star-active {
+  color: #e1251b;
+}
+
+
+.bar-text {
+  font-size: 27rpx;
+
+  color: #666666;
+}
+
+
+.bar-text-active {
+  color: #e1251b;
+}

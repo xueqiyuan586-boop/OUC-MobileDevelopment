@@ -1,0 +1,243 @@
+<view class='container {{isDemoPlaying ? "demoOn" : ""}}'>
+  <!--顶部状态栏：返回 + 关卡信息 + 菜单（CSS齿轮图标）-->
+  <view class='statusBar'>
+    <view class='iconBtn' bindtap='backToMenu' hover-class='press'>‹</view>
+    <view class='statusTitle'>
+      <view class='title'>第{{level}}关</view>
+      <view class='subtitle'>{{levelName}}</view>
+    </view>
+    <view class='iconBtn' bindtap='openMenu' hover-class='press'>
+      <view class='gear'></view>
+    </view>
+  </view>
+
+  <!--游戏区域冰晶画框（胜利弹层显示时移除画布，防止原生canvas穿透遮罩）
+      棋盘容器同时作为滑动触控区：滑动控制角色，按钮不受影响-->
+  <view class='boardCard' bindtouchstart='onTouchStart' bindtouchend='onTouchEnd' bindtouchcancel='onTouchCancel'>
+    <canvas wx:if='{{!won}}' canvas-id='myCanvas' class='board'></canvas>
+  </view>
+
+  <!--滑动操作提示（可在设置中关闭）-->
+  <view class='swipeHint' wx:if='{{tipsEnabled}}'>在地图上滑动控制角色</view>
+
+  <!--步数统计-->
+  <view class='infoRow'>
+    <text class='stepsText'>步数：{{steps}}</text>
+  </view>
+
+  <!--小提示（可在设置中关闭）-->
+  <view class='tipLine' wx:if='{{tipsEnabled}}'>小提示：{{tip}}</view>
+
+  <!--方向键控制器：冰晶十字D-pad（中间为装饰圆点，演示时当前步骤方向高亮）-->
+  <view class='dpadPanel'>
+    <view class='dpadRow'>
+      <button class='dpad {{demoDirection === "up" ? "dpadLit" : ""}}' bindtap='up' hover-class='dpadHover'>↑</button>
+    </view>
+    <view class='dpadRow'>
+      <button class='dpad {{demoDirection === "left" ? "dpadLit" : ""}}' bindtap='left' hover-class='dpadHover'>←</button>
+      <view class='dpadCore'><view class='dpadCoreDot'></view></view>
+      <button class='dpad {{demoDirection === "right" ? "dpadLit" : ""}}' bindtap='right' hover-class='dpadHover'>→</button>
+    </view>
+    <view class='dpadRow'>
+      <button class='dpad {{demoDirection === "down" ? "dpadLit" : ""}}' bindtap='down' hover-class='dpadHover'>↓</button>
+    </view>
+  </view>
+
+  <!--操作行：撤销 / 提示（金黄高亮）/ 重来，三枚小型胶囊按钮-->
+  <view class='actionRow'>
+    <button class='actionBtn actionUndo {{!canUndo ? "actionBtnOff" : ""}}' bindtap='undo' hover-class='press' disabled='{{!canUndo}}'>
+      <text class='glyph'>↶</text><text>撤销</text>
+    </button>
+    <button class='actionBtn actionHint' bindtap='openHelp' hover-class='press'>
+      <view class='icoBulb actionIco'></view><text>提示</text>
+    </button>
+    <button class='actionBtn actionRestart' bindtap='restartGame' hover-class='press'>
+      <text class='glyph'>↻</text><text>重来</text>
+    </button>
+  </view>
+
+  <!--胜利弹层：紧凑冰晶奖励卡（第X关完成 + 星星逐颗弹出 + 步数 + 按钮）-->
+  <view class='popMask' wx:if='{{won}}' catchtouchmove='noop'>
+    <view class='popCard winCard'>
+      <view class='winTitle'>第{{level}}关完成</view>
+      <!--本局获得的星星（winStars）：亮的为获得，暗的未获得；winStarsShown逐颗播放弹出动画-->
+      <view class='winStarsRow'>
+        <view class='winStar {{winStars >= 1 ? "lit" : ""}} {{winStarsShown >= 1 ? "show" : ""}}'></view>
+        <view class='winStar {{winStars >= 2 ? "lit" : ""}} {{winStarsShown >= 2 ? "show" : ""}}'></view>
+        <view class='winStar {{winStars >= 3 ? "lit" : ""}} {{winStarsShown >= 3 ? "show" : ""}}'></view>
+      </view>
+      <view class='winSteps'>
+        <view class='winStepLine'>本局 <text class='winStepNum'>{{steps}}</text> 步</view>
+        <view class='winStepLine'>最佳 <text class='winStepNum'>{{bestSteps}}</text> 步</view>
+      </view>
+      <!--第4关不显示“下一关”-->
+      <button class='popBtn popBtnPrimary winNext' wx:if='{{level < 4}}' bindtap='nextLevel' hover-class='btnHover'>下一关</button>
+      <view class='winBtns'>
+        <button class='popBtn popBtnGhost winHalf' bindtap='replayGame' hover-class='btnHover'>再玩一次</button>
+        <button class='popBtn popBtnGhost winHalf' bindtap='backToMenu' hover-class='btnHover'>{{level < 4 ? '返回选关' : '返回首页'}}</button>
+      </view>
+    </view>
+  </view>
+
+  <!--新手教程弹层（第一次进入游戏自动弹出，也可从菜单查看）-->
+  <view class='popMask' wx:if='{{showTutorial}}' catchtouchmove='noop'>
+    <view class='popCard'>
+      <view class='popTitle'>怎么玩？</view>
+      <view class='tutList'>
+        <view class='tutItem'>1. 滑动地图或点击方向键移动角色</view>
+        <view class='tutItem'>2. 靠近箱子可以推动箱子</view>
+        <view class='tutItem'>3. 将所有箱子推到目标位置</view>
+      </view>
+      <button class='popBtn popBtnPrimary' bindtap='closeTutorial' hover-class='btnHover'>开始游戏</button>
+    </view>
+  </view>
+
+  <!--游戏菜单弹层（顶部右侧齿轮）-->
+  <view class='popMask' wx:if='{{showMenu}}' catchtouchmove='noop' bindtap='closeMenu'>
+    <view class='popCard menuCard' catchtap='noop'>
+      <view class='menuItem' bindtap='showHelp' hover-class='press'>游戏帮助</view>
+      <view class='menuItem' bindtap='backToMenu' hover-class='press'>返回选关</view>
+    </view>
+  </view>
+
+  <!--提示中心弹层：需要帮忙吗？（CSS灯泡图标，按钮带小图标）-->
+  <view class='popMask' wx:if='{{showHelpModal}}' catchtouchmove='noop' bindtap='closeHelp'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popIco'><view class='icoBulb'></view></view>
+      <view class='popTitle'>需要帮忙吗？</view>
+      <button class='popBtn iconRow' bindtap='openHowTo' hover-class='btnHover'><view class='icoBook'></view><text>怎么玩</text></button>
+      <button class='popBtn iconRow' bindtap='openLevelHint' hover-class='btnHover'><view class='icoPin'></view><text>本关提示</text></button>
+      <button class='popBtn iconRow' bindtap='nextStepHint' hover-class='btnHover'><view class='icoArrow'></view><text>下一步提示</text></button>
+      <!--动态演示解法：规划路线时按钮显示“正在规划路线…”-->
+      <view class='popDesc'>还是不会？</view>
+      <button class='popBtn iconRow' bindtap='planDemo' hover-class='btnHover'><view class='icoPlay'></view><text>{{isPlanningDemo ? '正在规划路线…' : '动态演示解法'}}</text></button>
+      <button class='popBtn popBtnGhost' bindtap='closeHelp' hover-class='btnHover'>关闭</button>
+    </view>
+  </view>
+
+  <!--怎么玩教程弹层-->
+  <view class='popMask' wx:if='{{showHowTo}}' catchtouchmove='noop' bindtap='closeHowTo'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popIco'><view class='icoBook'></view></view>
+      <view class='popTitle'>怎么玩？</view>
+      <view class='tutList'>
+        <view class='tutItem'>移动角色：在地图上滑动，或者点击方向键移动。</view>
+        <view class='tutItem'>推动箱子：站在箱子旁边，向箱子方向移动即可推动。</view>
+        <view class='tutItem'>完成目标：将所有箱子推到目标位置即可通关。</view>
+        <view class='tutItem'>小心死角：箱子一旦被推到无法离开的角落，可以撤销或重新开始。</view>
+      </view>
+      <button class='popBtn popBtnPrimary' bindtap='closeHowTo' hover-class='btnHover'>我知道了</button>
+    </view>
+  </view>
+
+  <!--本关提示弹层：提示 1/3、2/3、3/3-->
+  <view class='popMask' wx:if='{{showLevelHint}}' catchtouchmove='noop' bindtap='closeLevelHint'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popIco'><view class='icoPin'></view></view>
+      <view class='popTitle'>本关提示</view>
+      <view class='hintProgress'>提示 {{hintIndex + 1}} / 3</view>
+      <view class='hintText'>{{hintText}}</view>
+      <button class='popBtn' bindtap='nextLevelHint' hover-class='btnHover'>下一条提示</button>
+      <button class='popBtn popBtnGhost' bindtap='closeLevelHint' hover-class='btnHover'>关闭</button>
+    </view>
+  </view>
+
+  <!--下一步提示弹层：正在思考 / 建议方向 / 局面复杂（CSS图标）-->
+  <view class='popMask' wx:if='{{showNextStep}}' catchtouchmove='noop' bindtap='closeNextStep'>
+    <view class='popCard' catchtap='noop'>
+      <block wx:if='{{isSolving}}'>
+        <view class='popIco'><view class='icoDots'></view></view>
+        <view class='popTitle'>正在思考…</view>
+        <view class='popDesc'>正在计算下一步，稍等一下～</view>
+      </block>
+      <block wx:elif='{{hintStepText === "complex"}}'>
+        <view class='popIco'><view class='icoDots'></view></view>
+        <view class='popTitle'>这个局面有点复杂</view>
+        <view class='popDesc'>可以试试撤销几步，或者重新开始本关。</view>
+      </block>
+      <block wx:elif='{{hintStepText === "won"}}'>
+        <view class='popIco'><view class='icoStar'></view></view>
+        <view class='popTitle'>箱子都已到位！</view>
+      </block>
+      <block wx:else>
+        <view class='popIco'><view class='icoBulb'></view></view>
+        <view class='popTitle'>建议下一步</view>
+        <view class='bigArrow'>{{hintArrow}}</view>
+        <view class='popDesc'>建议{{hintStepText}}移动，不会自动帮你走哦。</view>
+      </block>
+      <button class='popBtn popBtnGhost' bindtap='closeNextStep' hover-class='btnHover'>关闭</button>
+    </view>
+  </view>
+
+  <!--死局提醒弹层-->
+  <view class='popMask' wx:if='{{showDeadlock}}' catchtouchmove='noop' bindtap='closeDeadlock'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popIco'><view class='icoAlert'></view></view>
+      <view class='popTitle'>当前可能已经进入死局</view>
+      <view class='popDesc'>有箱子被推到了死角，这个局面可能无法通关。</view>
+      <button class='popBtn popBtnPrimary' bindtap='deadlockUndo' hover-class='btnHover'>撤销一步</button>
+      <button class='popBtn' bindtap='deadlockRestart' hover-class='btnHover'>重新开始</button>
+      <button class='popBtn popBtnGhost' bindtap='closeDeadlock' hover-class='btnHover'>关闭</button>
+    </view>
+  </view>
+
+  <!--动态演示控制条：进度 / 当前方向 / 暂停继续 / 停止（页面底部固定，冰晶面板）-->
+  <view class='demoBar' wx:if='{{isDemoPlaying}}'>
+    <view class='demoInfo'>
+      <text class='demoCount'>{{isDemoPaused ? '已暂停' : '正在演示'}} {{demoStepIndex}} / {{demoSolution.length}}</text>
+      <text class='demoDir' wx:if='{{!isDemoPaused && demoDirection}}'>当前：{{demoDirText}} {{demoDirArrow}}</text>
+    </view>
+    <view class='demoBtns'>
+      <button class='demoBtn' wx:if='{{!isDemoPaused}}' bindtap='pauseDemo' hover-class='press'><view class='icoPause'></view><text>暂停</text></button>
+      <button class='demoBtn' wx:if='{{isDemoPaused}}' bindtap='resumeDemo' hover-class='press'><view class='icoPlay'></view><text>继续</text></button>
+      <button class='demoBtn demoBtnStop' bindtap='stopDemo' hover-class='press'><view class='icoStop'></view><text>停止</text></button>
+    </view>
+  </view>
+
+  <!--动态演示完成弹层-->
+  <view class='popMask' wx:if='{{showDemoDone}}' catchtouchmove='noop'>
+    <view class='popCard'>
+      <view class='popIco'><view class='icoStar'></view></view>
+      <view class='popTitle'>演示完成</view>
+      <view class='popDesc'>这就是本关的一种通关方法，现在要自己试试吗？</view>
+      <view class='winBtns'>
+        <button class='popBtn popBtnPrimary' bindtap='demoDoneChallenge' hover-class='btnHover'>自己挑战</button>
+        <button class='popBtn' bindtap='demoDoneReplay' hover-class='btnHover'>再看一次</button>
+        <button class='popBtn popBtnGhost' bindtap='backToMenu' hover-class='btnHover'>返回选关</button>
+      </view>
+    </view>
+  </view>
+
+  <!--动态演示：死局提醒弹层-->
+  <view class='popMask' wx:if='{{showDemoStuck}}' catchtouchmove='noop' bindtap='closeDemoStuck'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popIco'><view class='icoAlert'></view></view>
+      <view class='popTitle'>这个局面已经很难继续啦</view>
+      <view class='popDesc'>建议撤销几步或重新开始后再演示。</view>
+      <button class='popBtn popBtnPrimary' bindtap='demoStuckUndo' hover-class='btnHover'>撤销一步</button>
+      <button class='popBtn' bindtap='demoRestartAndPlay' hover-class='btnHover'>重新开始并演示</button>
+      <button class='popBtn popBtnGhost' bindtap='closeDemoStuck' hover-class='btnHover'>关闭</button>
+    </view>
+  </view>
+
+  <!--动态演示：找不到可行解法弹层-->
+  <view class='popMask' wx:if='{{showDemoFail}}' catchtouchmove='noop' bindtap='closeDemoFail'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popIco'><view class='icoDots'></view></view>
+      <view class='popTitle'>暂时找不到可行解法</view>
+      <view class='popDesc'>当前局面暂时找不到可行解法，可以撤销几步或重新开始再试。</view>
+      <button class='popBtn popBtnPrimary' bindtap='closeDemoFail' hover-class='btnHover'>知道了</button>
+    </view>
+  </view>
+
+  <!--停止演示后的去向选择弹层-->
+  <view class='popMask' wx:if='{{showStopChoice}}' catchtouchmove='noop' bindtap='stopChoiceKeep'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popIco'><view class='icoStop'></view></view>
+      <view class='popTitle'>演示已停止</view>
+      <view class='popDesc'>要自己接手这个局面，还是重新开始本关？</view>
+      <button class='popBtn popBtnPrimary' bindtap='stopChoiceKeep' hover-class='btnHover'>继续自己玩</button>
+      <button class='popBtn' bindtap='stopChoiceRestart' hover-class='btnHover'>重新开始本关</button>
+    </view>
+  </view>
+</view>

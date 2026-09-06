@@ -1,0 +1,586 @@
+page {
+  background-color: #f7f7f7;
+  color: #1a1a1a;
+  box-sizing: border-box;
+
+  /* 底部预留原生 tabBar（约 100rpx）+ 安全区高度，
+     保证退出登录等页面底部内容完整可见、不被遮挡 */
+  padding-bottom: calc(140rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
+}
+
+.page {
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   用户信息
+   ========================= */
+
+.user-section {
+  background-color: #ffffff;
+
+  padding: 60rpx 36rpx 56rpx;
+
+  border-bottom: 1rpx solid #eeeeee;
+}
+
+
+/* 第一行（已登录 / 未登录共用）：头像 + 信息区，垂直居中 */
+.user-row,
+.login-row {
+  display: flex;
+
+  align-items: center;
+}
+
+
+/* 头像：强制圆形 */
+.user-avatar {
+  width: 132rpx;
+  height: 132rpx;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  flex-shrink: 0;
+
+  background-color: #f2f2f2;
+
+  display: block;
+}
+
+
+.user-info {
+  flex: 1;
+
+  min-width: 0;
+
+  margin-left: 30rpx;
+}
+
+
+.user-name {
+  display: block;
+
+  font-size: 38rpx;
+
+  font-weight: 600;
+
+  color: #1a1a1a;
+}
+
+
+.user-desc {
+  display: block;
+
+  margin-top: 12rpx;
+
+  font-size: 24rpx;
+
+  color: #999999;
+}
+
+
+/* =========================
+   未登录
+   ========================= */
+
+.avatar-button {
+  width: 132rpx !important;
+  height: 132rpx !important;
+
+  min-width: 132rpx;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: transparent !important;
+
+  border-radius: 50% !important;
+
+  overflow: hidden;
+
+  line-height: 132rpx;
+
+  flex-shrink: 0;
+}
+
+
+.avatar-button::after {
+  border: none !important;
+}
+
+
+/* 灰色人形占位 */
+.avatar-empty {
+  width: 132rpx;
+  height: 132rpx;
+
+  border-radius: 50%;
+
+  background-color: #f2f2f2;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+
+.avatar-empty::before {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 36rpx;
+
+  transform: translateX(-50%);
+
+  width: 46rpx;
+  height: 46rpx;
+
+  border-radius: 50%;
+
+  background-color: #c4c4c4;
+}
+
+
+.avatar-empty::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -38rpx;
+
+  transform: translateX(-50%);
+
+  width: 104rpx;
+  height: 104rpx;
+
+  border-radius: 50%;
+
+  background-color: #c4c4c4;
+}
+
+
+/* 昵称区域：flex:1 + min-width:0，占满本行剩余宽度，不再给右侧按钮让位 */
+.login-info {
+  flex: 1;
+
+  min-width: 0;
+
+  margin-left: 28rpx;
+}
+
+
+.nickname-input {
+  width: 100%;
+
+  height: 60rpx;
+
+  font-size: 30rpx;
+
+  color: #1a1a1a;
+}
+
+
+.nickname-placeholder {
+  color: #bbbbbb;
+
+  font-size: 30rpx;
+}
+
+
+.login-tip {
+  display: block;
+
+  margin-top: 10rpx;
+
+  font-size: 22rpx;
+
+  color: #aaaaaa;
+}
+
+
+/* 登录按钮：轻量胶囊按钮，单独一行，左对齐昵称区域（132 头像 + 28 间距） */
+.login-btn {
+  width: 200rpx;
+  height: 64rpx;
+
+  padding: 0;
+
+  margin: 28rpx 0 0 160rpx;
+
+  border-radius: 32rpx;
+
+  background-color: #e1251b;
+
+  color: #ffffff;
+
+  font-size: 26rpx;
+
+  line-height: 64rpx;
+}
+
+
+.login-btn::after {
+  border: none;
+}
+
+
+.login-btn-hover {
+  opacity: 0.85;
+}
+
+
+/* =========================
+   区块（收藏 / 足迹）
+   ========================= */
+
+.section {
+  margin-top: 18rpx;
+
+  background-color: #ffffff;
+
+  padding: 30rpx 30rpx 10rpx;
+}
+
+
+/* 标题行：flex 自动垂直居中，红线与文字基线自动对齐 */
+.section-title-row {
+  display: flex;
+
+  align-items: center;
+
+  padding-bottom: 8rpx;
+}
+
+
+.red-line {
+  width: 6rpx;
+  height: 34rpx;
+
+  border-radius: 3rpx;
+
+  background-color: #ed4956;
+
+  margin-right: 18rpx;
+
+  flex-shrink: 0;
+}
+
+
+.section-title {
+  font-size: 34rpx;
+
+  line-height: 42rpx;
+
+  font-weight: 600;
+
+  color: #1a1a1a;
+}
+
+
+/* 清空历史入口 */
+.clear-history {
+  margin-left: auto;
+
+  padding: 8rpx;
+
+  font-size: 24rpx;
+
+  color: #999999;
+}
+
+
+/* =========================
+   空状态
+   ========================= */
+
+.empty {
+  min-height: 380rpx;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+/* 未登录提示：更紧凑，保证页面下方不空白 */
+.empty-small {
+  min-height: 300rpx;
+}
+
+
+.empty-icon {
+  font-size: 66rpx;
+
+  color: #cccccc;
+
+  line-height: 1;
+}
+
+
+/* CSS 时钟图标（浏览足迹空状态） */
+.history-icon {
+  width: 56rpx;
+  height: 56rpx;
+
+  border: 4rpx solid #cccccc;
+
+  border-radius: 50%;
+
+  position: relative;
+
+  box-sizing: border-box;
+}
+
+
+.history-icon::before {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 4rpx;
+  height: 16rpx;
+
+  background-color: #cccccc;
+
+  transform-origin: bottom center;
+
+  transform: translate(-50%, -100%);
+
+  border-radius: 2rpx;
+}
+
+
+.history-icon::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 4rpx;
+  height: 22rpx;
+
+  background-color: #cccccc;
+
+  transform-origin: bottom center;
+
+  transform: translate(-50%, -100%) rotate(50deg);
+
+  border-radius: 2rpx;
+}
+
+
+.empty-title {
+  margin-top: 22rpx;
+
+  font-size: 29rpx;
+
+  color: #444444;
+}
+
+
+.empty-desc {
+  margin-top: 10rpx;
+
+  font-size: 23rpx;
+
+  color: #aaaaaa;
+}
+
+
+.home-btn {
+  width: 220rpx;
+  height: 68rpx;
+
+  margin-top: 34rpx;
+
+  padding: 0;
+
+  border-radius: 34rpx;
+
+  background-color: #e1251b;
+
+  color: #ffffff;
+
+  font-size: 25rpx;
+
+  line-height: 68rpx;
+}
+
+
+.home-btn::after {
+  border: none;
+}
+
+
+/* =========================
+   收藏新闻列表（左滑取消收藏）
+   ========================= */
+
+.swipe-item {
+  position: relative;
+
+  overflow: hidden;
+
+  border-bottom: 1rpx solid #eeeeee;
+}
+
+
+/* 左滑露出的红色取消收藏按钮 */
+.delete-btn {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  width: 180rpx;
+  height: 100%;
+
+  background-color: #e1251b;
+
+  color: #ffffff;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-size: 26rpx;
+}
+
+
+.news-item {
+  position: relative;
+
+  z-index: 2;
+
+  background-color: #ffffff;
+
+  padding: 28rpx 0;
+
+  display: flex;
+
+  align-items: center;
+
+  transition: transform 0.2s ease;
+}
+
+
+.news-content {
+  flex: 1;
+
+  min-width: 0;
+
+  padding-right: 25rpx;
+}
+
+
+.news-title {
+  font-size: 30rpx;
+
+  line-height: 44rpx;
+
+  color: #1a1a1a;
+
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
+
+  -webkit-line-clamp: 2;
+
+  overflow: hidden;
+}
+
+
+.news-date {
+  display: block;
+
+  margin-top: 18rpx;
+
+  font-size: 23rpx;
+
+  color: #999999;
+}
+
+
+.news-image {
+  width: 205rpx;
+  height: 135rpx;
+
+  border-radius: 6rpx;
+
+  flex-shrink: 0;
+
+  background-color: #f5f5f5;
+}
+
+
+/* =========================
+   浏览历史列表
+   ========================= */
+
+.history-item {
+  display: flex;
+
+  align-items: center;
+
+  padding: 28rpx 0;
+
+  border-bottom: 1rpx solid #eeeeee;
+}
+
+
+.history-item-hover {
+  background-color: #fafafa;
+}
+
+
+/* =========================
+   退出登录
+   ========================= */
+
+.logout-section {
+  margin-top: 18rpx;
+
+  background-color: #ffffff;
+
+  padding: 0 30rpx;
+}
+
+
+.logout-row {
+  height: 100rpx;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 30rpx;
+
+  color: #e1251b;
+}
+
+
+.logout-row-hover {
+  background-color: #fafafa;
+}

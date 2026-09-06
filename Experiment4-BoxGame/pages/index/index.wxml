@@ -1,0 +1,223 @@
+<view class='container'>
+  <!--顶部玩家条：轻薄横条（左：头像+昵称/称号；右：进度1/4+设置），高度约84rpx-->
+  <view class='topBar'>
+    <view class='player' bindtap='openPlayer' hover-class='press'>
+      <view class='avatar'>
+        <image wx:if='{{user && avatarImg}}' class='avatarImg' mode='aspectFit' src='{{avatarImg}}'></image>
+        <view wx:else class='guestStar'></view>
+      </view>
+      <view class='playerInfo'>
+        <text class='nick'>{{user ? user.nickName : '游客'}}</text>
+        <text class='playerTitle'>{{playerTitle}}</text>
+      </view>
+    </view>
+    <view class='playerRight'>
+      <!--冒险进度：1/4 小徽章-->
+      <view class='progressChip'>
+        <text class='chipText'>{{progressShort}}</text>
+      </view>
+      <view class='setBtn' bindtap='openSettings' hover-class='press'>
+        <view class='gear'></view>
+      </view>
+    </view>
+  </view>
+
+  <!--中部冒险地图：
+      4个统一规格的冰雪平台节点（普通220x130，当前240x142，border-radius 50%）
+      + 3条半透明冰雪小径（z1，永远在节点下方）
+      + 每关唯一一个主装饰（箱/冰/TNT/旗），全部留在平台40rpx安全区外
+      z-index：背景0 / 路线1 / 环境装饰2 / 节点3 / 状态角标4 / 角色5-->
+  <view class='mapStage'>
+    <!--环境层次（z2，极淡，只负责氛围）：软云3 + 远景雪丘3 + 冰面色块2 + 雪点8-->
+    <view class='cloud cloud1'></view>
+    <view class='cloud cloud2'></view>
+    <view class='cloud cloud3'></view>
+    <view class='snowDot dot1'></view>
+    <view class='snowDot dot2'></view>
+    <view class='snowDot dot3'></view>
+    <view class='snowDot dot4'></view>
+    <view class='snowDot dot5'></view>
+    <view class='snowDot dot6'></view>
+    <view class='snowDot dot7'></view>
+    <view class='snowDot dot8'></view>
+    <view class='hill hill1'></view>
+    <view class='hill hill2'></view>
+    <view class='hill hill3'></view>
+    <view class='icePatch patch1'></view>
+    <view class='icePatch patch2'></view>
+    <!--路线（z1）：3条边缘模糊的半透明冰雪小径 + 每段2个极小雪点（不成珠链）-->
+    <view class='trail t1'></view>
+    <view class='trail t2'></view>
+    <view class='trail t3'></view>
+    <view class='pathDot pd1'></view>
+    <view class='pathDot pd2'></view>
+    <view class='pathDot pd3'></view>
+    <view class='pathDot pd4'></view>
+    <view class='pathDot pd5'></view>
+    <view class='pathDot pd6'></view>
+    <!--游戏标题：轻文字，总高<100rpx（标题36rpx + 副标题22rpx）-->
+    <view class='titleBanner'>
+      <view class='gameTitle'>推箱子大冒险</view>
+      <view class='gameSub'>动动脑筋，把箱子送回家！</view>
+    </view>
+    <!--四个关卡平台节点（统一规格，平台本身就是可点击关卡）：
+         内部只放：大数字/关卡名/三颗小星（不重复“第X关”）；
+         锁统一右上角40rpx小角标；当前关=放大+极淡光晕+下方“当前挑战”小标签；
+         未解锁保留冰蓝配色只降透明度；每个平台外只保留一个主装饰；小猪只在第4关-->
+    <view class='nodeWrap' wx:for='{{nodes}}' wx:key='level'
+          style='left: {{item.x}}%; top: {{item.y}}%;'
+          bindtap='chooseLevel' data-level='{{item.level}}' hover-class='nodeHover'>
+      <view class='island {{item.current ? "cur" : ""}} {{item.locked ? "locked" : ""}}'>
+        <text class='islandNum'>{{item.level}}</text>
+        <text class='labelText'>{{item.name}}</text>
+        <view class='starsRow'>
+          <view class='miniStar {{item.stars >= 1 ? "on" : ""}}'></view>
+          <view class='miniStar {{item.stars >= 2 ? "on" : ""}}'></view>
+          <view class='miniStar {{item.stars >= 3 ? "on" : ""}}'></view>
+        </view>
+        <!--锁定角标：所有未解锁关卡统一固定右上角（40rpx小锁，不遮数字/关卡名/星星）-->
+        <view class='lockBadge' wx:if='{{item.locked}}'>
+          <view class='lockShackle'></view>
+          <view class='lockBody'></view>
+        </view>
+      </view>
+      <!--每关唯一主装饰（z2环境层）：箱/冰/TNT/旗，全部在平台安全区外24rpx以上-->
+      <image class='decoImg dBox' wx:if='{{item.level === 1}}' src='/images/icons/box.png' mode='aspectFit'></image>
+      <image class='decoImg dIce' wx:if='{{item.level === 2}}' src='/images/icons/ice.png' mode='aspectFit'></image>
+      <view class='tnt' wx:if='{{item.level === 3}}'><text class='tntText'>TNT</text></view>
+      <view class='flagWrap' wx:if='{{item.level === 4}}'>
+        <view class='flagCloth'></view>
+        <view class='flagPole'></view>
+      </view>
+      <!--第4关终点Boss小猪（z5角色层，平台右侧50rpx，不与锁/旗重叠）-->
+      <view class='pigWrap' wx:if='{{item.level === 4}}'>
+        <image class='pig' src='/images/icons/pig.png' mode='aspectFit'></image>
+        <view class='pigShadow'></view>
+      </view>
+      <!--当前挑战小标签（z4状态角标）：挂在当前平台正下方22rpx处，不与星星重叠-->
+      <view class='curTag' wx:if='{{item.current}}'>当前挑战</view>
+    </view>
+    <!--小鸟（z5角色层）：只站在当前推荐关卡旁的雪地上，脚下有椭圆阴影不悬空-->
+    <view class='birdWrap' style='left: {{birdPos.x}}%; top: {{birdPos.y}}%;'>
+      <image class='bird' src='/images/icons/bird.png' mode='aspectFit'></image>
+      <view class='birdShadow'></view>
+    </view>
+  </view>
+
+  <!--底部轻量功能栏：图标+小字 三等分（帮助/成绩/设置），高度约104rpx-->
+  <view class='bottomNav'>
+    <view class='navBtn' bindtap='openHelp' hover-class='navPress'>
+      <view class='navIco'><text class='qMark'>?</text></view>
+      <text class='navName'>帮助</text>
+    </view>
+    <view class='navBtn' bindtap='openScores' hover-class='navPress'>
+      <view class='navIco'><view class='starIcon'></view></view>
+      <text class='navName'>成绩</text>
+    </view>
+    <view class='navBtn' bindtap='openSettings' hover-class='navPress'>
+      <view class='navIco'><view class='gear'></view></view>
+      <text class='navName'>设置</text>
+    </view>
+  </view>
+
+  <!--玩家中心弹层：大号头像 + 昵称 + 退出登录（游客时不显示退出登录按钮）-->
+  <view class='popMask' wx:if='{{showPlayer}}' catchtouchmove='noop' bindtap='closePlayer'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popTitle'>玩家中心</view>
+      <view class='playerAvatar'>
+        <image wx:if='{{user && avatarImg}}' class='avatarImgBig' mode='aspectFit' src='{{avatarImg}}'></image>
+        <view wx:else class='guestStarBig'></view>
+      </view>
+      <text class='playerNick'>{{user ? user.nickName : '游客'}}</text>
+      <view class='popDesc'>{{user ? '欢迎回来～' : '登录后可使用专属昵称和头像'}}</view>
+      <button class='popBtn dangerBtn' wx:if='{{user}}' bindtap='logout' hover-class='btnHover'>退出登录</button>
+      <button class='popBtn popBtnPrimary' wx:if='{{!user}}' bindtap='openLogin' hover-class='btnHover'>登录 / 获取玩家身份</button>
+      <button class='popBtn popBtnGhost' bindtap='closePlayer' hover-class='btnHover'>取消</button>
+    </view>
+  </view>
+
+  <!--登录弹层：微信头像（chooseAvatar）+ 微信昵称输入框 + 冒险形象备用-->
+  <view class='popMask' wx:if='{{showLogin}}' catchtouchmove='noop' bindtap='closeLogin'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popTitle'>登录</view>
+      <view class='popDesc'>获取微信昵称和头像，开始冒险吧！</view>
+      <!--官方chooseAvatar：点击后头像选择器默认选中微信头像
+          choosingAvatar 状态锁：选择器打开期间禁用按钮，防止快速连点重复拉起
+          选择器触发 “chooseAvatar:fail another chooseAvatar is in progress”-->
+      <button class='avatarPick {{choosingAvatar ? "avatarPickOff" : ""}}' open-type='chooseAvatar' bindchooseavatar='onChooseAvatar' bindtap='onAvatarTap' disabled='{{choosingAvatar}}'>
+        <image wx:if='{{loginAvatarPath}}' class='avatarPickImg' mode='aspectFit' src='{{loginAvatarPath}}'></image>
+        <image wx:else class='avatarPickImg' mode='aspectFit' src='{{avatars[avatarIndex].img}}'></image>
+      </button>
+      <view class='popDesc'>点击上方头像选择微信头像</view>
+      <!--type="nickname"：输入时自动联想微信昵称-->
+      <input class='nickInput' type='nickname' value='{{nickInput}}' bindinput='onNickInput' placeholder='请输入昵称' maxlength='12' />
+      <view class='popDesc'>或选择冒险形象</view>
+      <view class='avatarRow'>
+        <view class='avatarChoice {{avatarIndex == index ? "on" : ""}}' wx:for='{{avatars}}' wx:key='emoji' bindtap='chooseAvatar' data-index='{{index}}'>
+          <image class='avatarChoiceImg' mode='aspectFit' src='{{item.img}}'></image>
+        </view>
+      </view>
+      <button class='popBtn popBtnPrimary' bindtap='confirmLogin' hover-class='btnHover'>确认登录</button>
+      <button class='popBtn popBtnGhost' bindtap='closeLogin' hover-class='btnHover'>取消</button>
+    </view>
+  </view>
+
+  <!--游戏帮助弹层-->
+  <view class='popMask' wx:if='{{showHelp}}' catchtouchmove='noop' bindtap='closeHelp'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popTitle'>怎么玩？</view>
+      <view class='helpList'>
+        <view class='helpItem'><view class='helpDot'></view>点击方向键，控制角色上下左右移动</view>
+        <view class='helpItem'><view class='helpDot'></view>靠近箱子后，再按同方向可以推动箱子</view>
+        <view class='helpItem'><view class='helpDot'></view>将所有箱子推到目标位置即可通关</view>
+        <view class='helpItem'><view class='helpDot'></view>箱子被推进死角后可能无法恢复，走错可以点撤销</view>
+      </view>
+      <button class='popBtn popBtnPrimary' bindtap='closeHelp' hover-class='btnHover'>知道啦</button>
+    </view>
+  </view>
+
+  <!--我的成绩弹层：每关星级 + 最佳步数-->
+  <view class='popMask' wx:if='{{showScores}}' catchtouchmove='noop' bindtap='closeScores'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popTitle'>我的冒险记录</view>
+      <view class='popDesc'>{{progressText}} · 共获得 {{totalStars}} 星</view>
+      <view class='scoreList'>
+        <view class='scoreItem {{item.done ? "ok" : ""}}' wx:for='{{nodes}}' wx:key='level'>
+          <text class='scoreName'>第{{item.level}}关 {{item.name}}</text>
+          <view class='scoreRight' wx:if='{{item.done}}'>
+            <view class='scoreMiniStars'>
+              <view class='miniStar {{item.stars >= 1 ? "on" : ""}}'></view>
+              <view class='miniStar {{item.stars >= 2 ? "on" : ""}}'></view>
+              <view class='miniStar {{item.stars >= 3 ? "on" : ""}}'></view>
+            </view>
+            <text class='scoreSteps'>最佳 {{item.bestSteps}} 步</text>
+          </view>
+          <text class='scoreUndone' wx:else>未完成</text>
+        </view>
+      </view>
+      <button class='popBtn popBtnPrimary' bindtap='closeScores' hover-class='btnHover'>关闭</button>
+    </view>
+  </view>
+
+  <!--游戏设置弹层-->
+  <view class='popMask' wx:if='{{showSettings}}' catchtouchmove='noop' bindtap='closeSettings'>
+    <view class='popCard' catchtap='noop'>
+      <view class='popTitle'>游戏设置</view>
+      <view class='settingRow'>
+        <text class='settingName'>音效</text>
+        <switch checked='{{soundEnabled}}' color='#3F8DE8' bindchange='onSoundChange' />
+      </view>
+      <view class='settingRow'>
+        <text class='settingName'>震动反馈</text>
+        <switch checked='{{vibrateEnabled}}' color='#3F8DE8' bindchange='onVibrateChange' />
+      </view>
+      <view class='settingRow'>
+        <text class='settingName'>游戏提示</text>
+        <switch checked='{{tipsEnabled}}' color='#3F8DE8' bindchange='onTipsChange' />
+      </view>
+      <button class='popBtn' bindtap='rewatchTutorial' hover-class='btnHover'>重新查看教程</button>
+      <button class='popBtn dangerBtn' bindtap='resetProgress' hover-class='btnHover'>重置游戏进度</button>
+      <button class='popBtn popBtnGhost' bindtap='closeSettings' hover-class='btnHover'>关闭</button>
+    </view>
+  </view>
+</view>

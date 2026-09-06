@@ -1,0 +1,140 @@
+/*页面背景：冰雪蓝渐变（全局统一视觉基调）*/
+page {
+  background: linear-gradient(180deg, #A9D7FF 0%, #CDE8FF 40%, #EAF6FF 100%);
+}
+
+/*页面容器样式*/
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/*顶端标题样式*/
+.title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #2C4A73;
+}
+
+/*副标题样式*/
+.subtitle {
+  font-size: 26rpx;
+  color: #7E9BC0;
+  margin-top: 10rpx;
+}
+
+/*通用按压反馈（可点击的小图标/视图）：缩小+下沉*/
+.press {
+  transform: scale(0.95) translateY(2rpx);
+  opacity: 0.9;
+}
+
+/*通用按钮按压反馈：轻微下沉+透明度，配合各按钮自身的阴影减弱*/
+.btnHover {
+  transform: scale(0.97) translateY(2rpx);
+  opacity: 0.9;
+}
+
+/*弹层遮罩（两个页面共用）：冰蓝深色覆盖全屏*/
+.popMask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(30, 60, 100, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.2s ease;
+}
+
+/*弹层卡片：雪白冰晶卡片（冰蓝描边+雪面高光+弹出动画）*/
+.popCard {
+  width: 560rpx;
+  background: #F7FCFF;
+  border: 2rpx solid rgba(255, 255, 255, 0.95);
+  border-radius: 40rpx;
+  padding: 40rpx 36rpx 32rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 24rpx 70rpx rgba(45, 95, 150, 0.35), inset 0 2rpx 0 rgba(255, 255, 255, 0.9);
+  animation: popIn 0.26s ease;
+}
+
+/*弹层标题*/
+.popTitle {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #2C5A96;
+  margin-top: 16rpx;
+}
+
+/*弹层描述文字*/
+.popDesc {
+  font-size: 26rpx;
+  color: #7E9BC0;
+  margin-top: 12rpx;
+  text-align: center;
+}
+
+/*弹层按钮通用样式：冰蓝半透明胶囊*/
+.popBtn {
+  width: 100%;
+  height: 84rpx;
+  line-height: 84rpx;
+  padding: 0;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  margin: 10rpx 0;
+  background: rgba(63, 141, 232, 0.10);
+  border: 2rpx solid rgba(63, 141, 232, 0.28);
+  color: #3F6FA8;
+  box-sizing: border-box;
+  transition: transform 0.12s ease, opacity 0.12s ease, box-shadow 0.12s ease;
+}
+.popBtn::after {
+  border: none;
+}
+
+/*主按钮：暖橙/金橙渐变胶囊（白字+发光阴影+雪面高光）*/
+.popBtnPrimary {
+  background: linear-gradient(135deg, #FFD25E 0%, #FFA43C 45%, #FF8E3C 100%);
+  border: 2rpx solid rgba(255, 255, 255, 0.6);
+  color: #FFFFFF;
+  font-weight: bold;
+  box-shadow: 0 10rpx 26rpx rgba(255, 150, 60, 0.45), inset 0 2rpx 0 rgba(255, 255, 255, 0.65);
+  text-shadow: 0 1rpx 2rpx rgba(200, 100, 20, 0.4);
+}
+
+/*次级按钮：雪白半透明+轻边框，不抢主按钮视觉*/
+.popBtnGhost {
+  background: rgba(255, 255, 255, 0.6);
+  border: 2rpx solid rgba(63, 141, 232, 0.25);
+  color: #6E93BE;
+}
+
+/*危险操作按钮：浅红半透明胶囊*/
+.dangerBtn {
+  background: rgba(242, 92, 78, 0.10);
+  border: 2rpx solid rgba(242, 92, 78, 0.3);
+  color: #E25A4C;
+}
+
+/*弹层动画：遮罩淡入+卡片弹出（scale + fade）*/
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

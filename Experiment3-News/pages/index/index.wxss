@@ -1,0 +1,748 @@
+/* 页面底部预留 tabBar + 安全区高度，保证最后一条内容完整可见 */
+page {
+  background-color: #ffffff;
+  color: #1a1a1a;
+  box-sizing: border-box;
+  padding-bottom: calc(120rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}
+
+
+/* =========================
+   顶部栏（自定义导航）
+   ========================= */
+
+.nav-brand {
+  align-self: center;
+
+  font-size: 34rpx;
+
+  font-weight: 700;
+
+  color: #1a1a1a;
+
+  line-height: 1;
+}
+
+
+.nav-actions {
+  display: flex;
+
+  align-items: center;
+
+  margin-right: 12rpx;
+}
+
+
+.nav-action {
+  display: flex;
+
+  align-items: center;
+
+  padding: 12rpx;
+}
+
+
+.nav-action + .nav-action {
+  margin-left: 8rpx;
+}
+
+
+.nav-action-hover {
+  opacity: 0.5;
+}
+
+
+.nav-star {
+  font-size: 40rpx;
+
+  line-height: 1;
+
+  color: #333333;
+}
+
+
+/* =========================
+   搜索
+   ========================= */
+
+/* CSS 放大镜图标 */
+.search-icon {
+  width: 26rpx;
+  height: 26rpx;
+
+  border: 3rpx solid #999999;
+
+  border-radius: 50%;
+
+  position: relative;
+
+  box-sizing: border-box;
+
+  flex-shrink: 0;
+}
+
+
+.search-icon::after {
+  content: '';
+
+  position: absolute;
+
+  right: -9rpx;
+  bottom: -7rpx;
+
+  width: 3rpx;
+  height: 13rpx;
+
+  background-color: #999999;
+
+  transform: rotate(-45deg);
+
+  border-radius: 2rpx;
+}
+
+
+/* 顶部栏里的深色放大镜 */
+.search-icon-dark {
+  border-color: #333333;
+}
+
+
+.search-icon-dark::after {
+  background-color: #333333;
+}
+
+
+/* 展开态：输入框 + 取消 */
+.search-open {
+  display: flex;
+
+  align-items: center;
+
+  padding: 14rpx 24rpx;
+
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+
+.search-input-box {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 64rpx;
+
+  border-radius: 32rpx;
+
+  background-color: #f4f4f4;
+
+  display: flex;
+
+  align-items: center;
+
+  padding: 0 26rpx;
+
+  box-sizing: border-box;
+}
+
+
+.search-input {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 64rpx;
+
+  margin-left: 14rpx;
+
+  font-size: 26rpx;
+
+  color: #1a1a1a;
+}
+
+
+.search-placeholder {
+  font-size: 26rpx;
+
+  color: #999999;
+}
+
+
+.search-clear {
+  width: 40rpx;
+  height: 40rpx;
+
+  border-radius: 50%;
+
+  background-color: #dddddd;
+
+  color: #ffffff;
+
+  font-size: 28rpx;
+
+  line-height: 36rpx;
+
+  text-align: center;
+
+  flex-shrink: 0;
+}
+
+
+.search-cancel {
+  margin-left: 24rpx;
+
+  font-size: 28rpx;
+
+  color: #e1251b;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================
+   Stories 分类区（Instagram Story 风格）
+   ========================= */
+
+/* 频道栏容器：均匀分布，所有 item 顶部齐平 */
+.story-bar {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-around;
+
+  background-color: #ffffff;
+
+  padding: 20rpx 0 16rpx;
+
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+
+/* 每个频道项：固定等宽，列布局 */
+.story-item {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  width: 150rpx;
+}
+
+
+/* 外圈：固定 110rpx，细边框，无阴影；内容居中 */
+.story-ring {
+  width: 110rpx;
+  height: 110rpx;
+
+  border-radius: 50%;
+
+  border: 3rpx solid #e5e5e5;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  box-sizing: border-box;
+
+  background-color: #ffffff;
+}
+
+
+/* 选中：Instagram 风格红色细边框 */
+.story-ring-active {
+  border-color: #e1251b;
+}
+
+
+/* 内圆图片：固定 98rpx，与外圈同心 */
+.story-img {
+  width: 98rpx;
+  height: 98rpx;
+
+  border-radius: 50%;
+
+  display: block;
+
+  background-color: #f5f5f5;
+}
+
+
+/* 无配图频道的占位圆：与图片圆完全同尺寸，字符居中 */
+.story-fallback {
+  width: 98rpx;
+  height: 98rpx;
+
+  border-radius: 50%;
+
+  border: 2rpx solid #efefef;
+
+  background-color: #fafafa;
+
+  color: #999999;
+
+  font-size: 34rpx;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  box-sizing: border-box;
+}
+
+
+/* 文字：字号/行高/间距统一，基线齐平 */
+.story-text {
+  margin-top: 12rpx;
+
+  font-size: 22rpx;
+
+  line-height: 30rpx;
+
+  color: #666666;
+}
+
+
+.story-text-active {
+  color: #e1251b;
+
+  font-weight: 600;
+}
+
+
+/* =========================
+   幻灯片区（3 图自动轮播）
+   ========================= */
+
+/* 轮播容器：左右留白 + 轻微圆角，图片为主 */
+.headline-swiper {
+  height: 380rpx;
+
+  margin: 20rpx 24rpx 0;
+}
+
+
+.slide {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  border-radius: 12rpx;
+
+  overflow: hidden;
+
+  background-color: #f5f5f5;
+}
+
+
+.slide-img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+}
+
+
+/* 底部轻微黑色渐变遮罩，保证文字可读 */
+.slide-mask {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 50%;
+
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+}
+
+
+/* 左下角：要闻标签 + 标题 */
+.slide-caption {
+  position: absolute;
+
+  left: 24rpx;
+  right: 24rpx;
+  bottom: 26rpx;
+
+  display: flex;
+
+  align-items: center;
+}
+
+
+.slide-tag {
+  flex-shrink: 0;
+
+  height: 36rpx;
+
+  line-height: 36rpx;
+
+  padding: 0 12rpx;
+
+  border-radius: 4rpx;
+
+  background-color: #e1251b;
+
+  color: #ffffff;
+
+  font-size: 20rpx;
+
+  margin-right: 14rpx;
+}
+
+
+.slide-title {
+  flex: 1;
+
+  min-width: 0;
+
+  /* 给右下角指示点留出位置 */
+  padding-right: 70rpx;
+
+  color: #ffffff;
+
+  font-size: 28rpx;
+
+  line-height: 36rpx;
+
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
+
+  -webkit-line-clamp: 1;
+
+  overflow: hidden;
+}
+
+
+/* 右下角：轮播指示点（当前项为白色小胶囊） */
+.slide-dots {
+  position: absolute;
+
+  right: 24rpx;
+  bottom: 40rpx;
+
+  display: flex;
+
+  align-items: center;
+}
+
+
+.slide-dot {
+  width: 8rpx;
+  height: 8rpx;
+
+  border-radius: 4rpx;
+
+  background-color: rgba(255, 255, 255, 0.45);
+
+  margin-left: 10rpx;
+}
+
+
+.slide-dot-active {
+  width: 22rpx;
+
+  background-color: #ffffff;
+}
+
+
+/* =========================
+   Post 卡片
+   ========================= */
+
+.feed {
+  background-color: #ffffff;
+}
+
+
+.post {
+  border-bottom: 16rpx solid #f5f5f5;
+}
+
+
+/* 头部 */
+.post-header {
+  display: flex;
+
+  align-items: center;
+
+  padding: 22rpx 24rpx 18rpx;
+}
+
+
+.post-avatar {
+  width: 72rpx;
+  height: 72rpx;
+
+  border-radius: 50%;
+
+  flex-shrink: 0;
+
+  background-color: #f2f2f2;
+}
+
+
+.post-source {
+  flex: 1;
+
+  min-width: 0;
+
+  margin-left: 18rpx;
+}
+
+
+.post-source-name {
+  display: block;
+
+  font-size: 28rpx;
+
+  font-weight: 500;
+
+  color: #1a1a1a;
+}
+
+
+.post-source-sub {
+  display: block;
+
+  margin-top: 4rpx;
+
+  font-size: 22rpx;
+
+  color: #999999;
+}
+
+
+.post-more {
+  padding: 8rpx 4rpx 8rpx 24rpx;
+
+  font-size: 30rpx;
+
+  color: #666666;
+
+  letter-spacing: 2rpx;
+}
+
+
+.post-more-hover {
+  opacity: 0.5;
+}
+
+
+/* 大图：通栏、统一比例，不拉伸变形 */
+.post-img {
+  width: 100%;
+  height: 430rpx;
+
+  display: block;
+
+  background-color: #f5f5f5;
+}
+
+
+/* 操作区：左组（喜欢/评论/分享紧凑排列）+ 右侧收藏，两端对齐 */
+.post-actions {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 10rpx 20rpx 4rpx;
+}
+
+
+.post-actions-left {
+  display: flex;
+
+  align-items: center;
+}
+
+
+/* 前三个图标紧凑排列：相邻按钮间距 8rpx。
+   不用 flex gap —— 低版本微信 WebView 不支持 gap，
+   改用相邻兄弟 margin，所有版本渲染一致 */
+.post-actions-left .action-btn + .action-btn {
+  margin-left: 8rpx;
+}
+
+
+/* 统一触控区：64x64rpx，图标绝对居中，四个图标垂直中心一致 */
+.action-btn {
+  width: 64rpx;
+  height: 64rpx;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  box-sizing: border-box;
+}
+
+
+/* 分享按钮：去掉 button 默认样式，其余与普通操作项完全一致 */
+.share-action {
+  background: transparent;
+
+  margin: 0;
+
+  padding: 0;
+
+  border-radius: 0;
+
+  line-height: 1;
+}
+
+
+.share-action::after {
+  border: none;
+}
+
+
+/* 四个操作图标：统一 44rpx 渲染尺寸，同一套本地 PNG outline 图标 */
+.action-icon {
+  width: 44rpx;
+  height: 44rpx;
+
+  display: block;
+}
+
+
+/* 内容区 */
+.post-content {
+  padding: 14rpx 24rpx 30rpx;
+}
+
+
+.post-title {
+  display: block;
+
+  font-size: 32rpx;
+
+  font-weight: 600;
+
+  line-height: 46rpx;
+
+  color: #1a1a1a;
+
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
+
+  -webkit-line-clamp: 2;
+
+  overflow: hidden;
+}
+
+
+.post-summary {
+  display: block;
+
+  margin-top: 10rpx;
+
+  font-size: 26rpx;
+
+  line-height: 40rpx;
+
+  color: #666666;
+
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
+
+  -webkit-line-clamp: 2;
+
+  overflow: hidden;
+}
+
+
+.post-date {
+  display: block;
+
+  margin-top: 14rpx;
+
+  font-size: 22rpx;
+
+  color: #999999;
+}
+
+
+/* =========================
+   空状态
+   ========================= */
+
+.list-empty {
+  padding: 110rpx 0 130rpx;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+}
+
+
+/* CSS 放大镜图标（大号，用于空状态） */
+.list-empty-icon {
+  width: 52rpx;
+  height: 52rpx;
+
+  border: 5rpx solid #cccccc;
+
+  border-radius: 50%;
+
+  position: relative;
+
+  box-sizing: border-box;
+}
+
+
+.list-empty-icon::after {
+  content: '';
+
+  position: absolute;
+
+  right: -14rpx;
+  bottom: -10rpx;
+
+  width: 5rpx;
+  height: 26rpx;
+
+  background-color: #cccccc;
+
+  transform: rotate(-45deg);
+
+  border-radius: 3rpx;
+}
+
+
+.empty-text {
+  margin-top: 24rpx;
+
+  font-size: 28rpx;
+
+  color: #666666;
+}
+
+
+.empty-desc {
+  margin-top: 10rpx;
+
+  font-size: 23rpx;
+
+  color: #aaaaaa;
+}

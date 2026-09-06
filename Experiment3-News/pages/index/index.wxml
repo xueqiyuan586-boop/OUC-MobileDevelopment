@@ -1,0 +1,297 @@
+<!-- =========================
+     顶部栏：左侧品牌 + 右侧轻量图标（搜索 / 收藏）
+     ========================= -->
+<navigation-bar back="{{false}}" title="">
+  <view slot="left" class="nav-brand">校园新闻</view>
+  <view slot="right" class="nav-actions">
+    <view
+      class="nav-action"
+      hover-class="nav-action-hover"
+      bindtap="openSearch"
+    >
+      <view class="search-icon search-icon-dark"></view>
+    </view>
+    <view
+      class="nav-action"
+      hover-class="nav-action-hover"
+      bindtap="goMy"
+    >
+      <text class="nav-star">☆</text>
+    </view>
+  </view>
+</navigation-bar>
+
+
+<!-- =========================
+     搜索展开行
+     ========================= -->
+<view
+  wx:if="{{searchOpen}}"
+  class="search-open"
+>
+  <view class="search-input-box">
+    <view class="search-icon"></view>
+
+    <input
+      class="search-input"
+      value="{{keyword}}"
+      placeholder="搜索新闻标题"
+      placeholder-class="search-placeholder"
+      focus="{{searchOpen}}"
+      confirm-type="search"
+      bindinput="onSearchInput"
+    />
+
+    <view
+      wx:if="{{keyword}}"
+      class="search-clear"
+      catchtap="clearKeyword"
+    >×</view>
+  </view>
+
+  <text
+    class="search-cancel"
+    bindtap="closeSearch"
+  >取消</text>
+</view>
+
+
+<!-- =========================
+     Stories 分类区（等宽频道项，均匀分布）
+     ========================= -->
+<view
+  wx:if="{{!isSearching}}"
+  class="story-bar"
+>
+  <view
+    class="story-item"
+    wx:for="{{stories}}"
+    wx:key="name"
+    bindtap="switchChannel"
+    data-channel="{{item.name}}"
+  >
+    <view class="story-ring {{activeChannel == item.name ? 'story-ring-active' : ''}}">
+      <image
+        wx:if="{{item.img}}"
+        class="story-img"
+        src="{{item.img}}"
+        mode="aspectFill"
+      ></image>
+      <view wx:else class="story-fallback">{{item.initial}}</view>
+    </view>
+
+    <text class="story-text {{activeChannel == item.name ? 'story-text-active' : ''}}">
+      {{item.name}}
+    </text>
+  </view>
+</view>
+
+
+<!-- =========================
+     幻灯片区：3 图自动轮播（点击进入详情）
+     ========================= -->
+<swiper
+  wx:if="{{!isSearching}}"
+  class="headline-swiper"
+  circular="true"
+  autoplay="true"
+  interval="4500"
+  duration="500"
+  indicator-dots="false"
+  bindchange="onSwiperChange"
+>
+  <swiper-item
+    wx:for="{{swiperImg}}"
+    wx:key="id"
+    bindtap="goToDetail"
+    data-id="{{item.id}}"
+  >
+    <view class="slide">
+      <image
+        class="slide-img"
+        src="{{item.src}}"
+        mode="aspectFill"
+      ></image>
+      <view class="slide-mask"></view>
+
+      <!-- 左下角：要闻标签 + 标题 -->
+      <view class="slide-caption">
+        <text class="slide-tag">要闻</text>
+        <text class="slide-title">{{item.title}}</text>
+      </view>
+
+      <!-- 右下角：轮播指示点 -->
+      <view class="slide-dots">
+        <view
+          wx:for="{{swiperImg}}"
+          wx:key="id"
+          class="slide-dot {{swiperCurrent == index ? 'slide-dot-active' : ''}}"
+        ></view>
+      </view>
+    </view>
+  </swiper-item>
+</swiper>
+
+
+<!-- =========================
+     内容区：搜索结果 / 频道 Feed
+     ========================= -->
+
+<!-- 搜索中：实时结果 -->
+<block wx:if="{{isSearching}}">
+
+  <view
+    wx:if="{{searchResults.length > 0}}"
+    class="feed"
+  >
+    <block
+      wx:for="{{searchResults}}"
+      wx:key="id"
+    >
+      <template is="post" data="{{item: item, isLogin: isLogin}}"></template>
+    </block>
+  </view>
+
+  <view
+    wx:else
+    class="list-empty"
+  >
+    <view class="list-empty-icon"></view>
+    <text class="empty-text">暂无相关新闻</text>
+    <text class="empty-desc">换个关键词试试吧</text>
+  </view>
+
+</block>
+
+<!-- 正常态：频道新闻 Feed -->
+<block wx:else>
+
+  <view
+    wx:if="{{displayList.length > 0}}"
+    class="feed"
+  >
+    <block
+      wx:for="{{displayList}}"
+      wx:key="id"
+    >
+      <template is="post" data="{{item: item, isLogin: isLogin}}"></template>
+    </block>
+  </view>
+
+  <view
+    wx:else
+    class="list-empty"
+  >
+    <view class="list-empty-icon"></view>
+    <text class="empty-text">该频道暂无内容</text>
+  </view>
+
+</block>
+
+
+<!-- =========================
+     新闻 Post 模板（Instagram 风格卡片）
+     ========================= -->
+<template name="post">
+  <view class="post">
+
+    <!-- 头部：头像 + 来源 + 频道 + 更多 -->
+    <view class="post-header">
+      <image
+        class="post-avatar"
+        src="{{item.poster}}"
+        mode="aspectFill"
+      ></image>
+
+      <view class="post-source">
+        <text class="post-source-name">校园新闻网</text>
+        <text class="post-source-sub">{{item.channel}}</text>
+      </view>
+
+      <view
+        class="post-more"
+        hover-class="post-more-hover"
+        bindtap="onPostMenu"
+        data-id="{{item.id}}"
+        data-title="{{item.title}}"
+      >···</view>
+    </view>
+
+    <!-- 大图 -->
+    <image
+      class="post-img"
+      src="{{item.poster}}"
+      mode="aspectFill"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    ></image>
+
+    <!-- 操作区：喜欢 / 评论 / 分享 | 收藏（统一 PNG outline 图标） -->
+    <view class="post-actions">
+      <view class="post-actions-left">
+
+        <view
+          class="action-btn"
+          bindtap="toggleLike"
+          data-id="{{item.id}}"
+        >
+          <image
+            class="action-icon"
+            src="{{item.liked ? '/images/heart-red.png' : '/images/heart.png'}}"
+            mode="aspectFit"
+          ></image>
+        </view>
+
+        <view
+          class="action-btn"
+          bindtap="onComment"
+        >
+          <image
+            class="action-icon"
+            src="/images/comment.png"
+            mode="aspectFit"
+          ></image>
+        </view>
+
+        <button
+          class="action-btn share-action"
+          open-type="{{isLogin ? 'share' : ''}}"
+          bindtap="setShareTarget"
+          data-id="{{item.id}}"
+          data-title="{{item.title}}"
+        >
+          <image
+            class="action-icon"
+            src="/images/share.png"
+            mode="aspectFit"
+          ></image>
+        </button>
+
+      </view>
+
+      <view
+        class="action-btn"
+        bindtap="toggleFavorite"
+        data-id="{{item.id}}"
+      >
+        <image
+          class="action-icon"
+          src="{{item.isFav ? '/images/bookmark-red.png' : '/images/bookmark.png'}}"
+          mode="aspectFit"
+        ></image>
+      </view>
+    </view>
+
+    <!-- 内容：标题 + 摘要 + 发布时间 -->
+    <view
+      class="post-content"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <text class="post-title">{{item.title}}</text>
+      <text class="post-summary">{{item.summary}}</text>
+      <text class="post-date">{{item.add_date}}</text>
+    </view>
+
+  </view>
+</template>

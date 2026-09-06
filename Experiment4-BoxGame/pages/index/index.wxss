@@ -1,0 +1,836 @@
+/*首页容器：纵向三段式（顶部玩家条/中部地图/底部功能栏）
+  重要：显式覆盖 app.wxss 里全局 .container 的 flex 属性——
+  align-items:stretch 保证子项铺满宽度（曾因 align-items:center 导致地图塌缩成一条竖线），
+  height:auto + overflow:visible 允许小屏滚动，不裁切任何内容*/
+.container {
+  height: auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  overflow: visible;
+  padding: 16rpx 32rpx;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 20rpx);
+}
+
+/*================ 顶部玩家条：轻薄横条（高约84rpx，非大卡片） ================*/
+.topBar {
+  width: 100%;
+  flex-shrink: 0;
+  height: 84rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(214, 238, 255, 0.55);
+  border: 1rpx solid rgba(255, 255, 255, 0.85);
+  border-radius: 22rpx;
+  padding: 8rpx 12rpx 8rpx 10rpx;
+  box-shadow: 0 6rpx 16rpx rgba(45, 95, 150, 0.10);
+}
+
+/*玩家信息区（左侧，无胶囊底，直接放在横条上）*/
+.player {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+/*头像：56rpx圆形冰蓝底（图片aspectFit完整显示，游客显示CSS星星）*/
+.avatar {
+  flex-shrink: 0;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FFFFFF 0%, #BFE2FF 100%);
+  border: 2rpx solid #FFFFFF;
+  box-shadow: 0 3rpx 8rpx rgba(45, 95, 150, 0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.avatarImg {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+}
+
+/*游客默认头像：金色CSS星星（仅星星保留clip-path）*/
+.guestStar {
+  width: 28rpx;
+  height: 28rpx;
+  background: linear-gradient(135deg, #FFE08A 0%, #FFB84D 100%);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.guestStarBig {
+  width: 88rpx;
+  height: 88rpx;
+  background: linear-gradient(135deg, #FFE08A 0%, #FFB84D 100%);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.playerInfo {
+  display: flex;
+  flex-direction: column;
+  margin-left: 12rpx;
+  overflow: hidden;
+}
+.nick {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #24476E;
+  line-height: 1.15;
+  max-width: 220rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/*玩家称号：小号冰蓝字，随总星数升级*/
+.playerTitle {
+  font-size: 18rpx;
+  color: #5B8DC4;
+  line-height: 1.2;
+  max-width: 220rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*玩家条右侧：进度徽章 + 设置齿轮*/
+.playerRight {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+/*冒险进度小徽章：1/4（暖橙点缀，不占空间）*/
+.progressChip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: linear-gradient(135deg, #FFD25E 0%, #FFA43C 100%);
+  border: 2rpx solid rgba(255, 255, 255, 0.85);
+  border-radius: 999rpx;
+  padding: 4rpx 16rpx;
+  margin-right: 12rpx;
+  box-shadow: 0 4rpx 10rpx rgba(255, 150, 60, 0.30);
+}
+.chipText {
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+  text-shadow: 0 1rpx 2rpx rgba(200, 110, 20, 0.35);
+}
+
+/*设置按钮：小圆钮 + CSS齿轮图标*/
+.setBtn {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.60);
+  border: 2rpx solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 3rpx 8rpx rgba(45, 95, 150, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+/*CSS齿轮：虚线齿圈 + 实心轴孔*/
+.gear {
+  width: 26rpx;
+  height: 26rpx;
+  border: 6rpx dashed #2C5A96;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gear::after {
+  content: '';
+  width: 10rpx;
+  height: 10rpx;
+  border: 4rpx solid #2C5A96;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+/*================ 中部冒险地图：4个统一冰雪平台节点 + 半透明冰雪小径 ================*/
+/*关键修复：显式 width:100% + 固定高度1120rpx。
+  不依赖flex/100vh给高度（曾导致高度无法确定、内部百分比定位全部失效）；
+  固定高度是内部所有百分比定位的可靠基准*/
+.mapStage {
+  position: relative;
+  width: 100%;
+  height: 1120rpx;
+  margin-top: 12rpx;
+  margin-bottom: 12rpx;
+  border-radius: 28rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12rpx 30rpx rgba(45, 95, 150, 0.18);
+  overflow: hidden;
+  /*干净背景：浅蓝 -> 冰白渐变*/
+  background: linear-gradient(180deg, #8FD1FF 0%, #CCECFF 45%, #F5FBFF 100%);
+}
+
+/*层级规划（与z-index一一对应）：
+  0 地图容器背景渐变
+  1 路线（半透明冰雪小径 + 极小雪点，永远在节点下方）
+  2 环境装饰（软云/雪点/远景雪丘/冰面色块/关卡主装饰）
+  3 节点（关卡平台/游戏标题）
+  4 状态角标（锁/当前挑战标签）
+  5 角色（小鸟/小猪）
+  所有z-index元素均为position:absolute，确保层级生效*/
+
+/*软云：径向渐变白雾团（很淡，不抢视觉）*/
+.cloud {
+  position: absolute;
+  z-index: 2;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+}
+.cloud1 { left: 15%; top: 7%; width: 320rpx; height: 90rpx; }
+.cloud2 { left: 72%; top: 12%; width: 380rpx; height: 100rpx; }
+.cloud3 { left: 84%; top: 68%; width: 300rpx; height: 90rpx; }
+
+/*雪点：很小的圆形雪花点（散点，不成珠链）*/
+.snowDot {
+  position: absolute;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+}
+.dot1 { left: 8%; top: 12%; width: 12rpx; height: 12rpx; }
+.dot2 { left: 20%; top: 30%; width: 10rpx; height: 10rpx; }
+.dot3 { left: 78%; top: 10%; width: 14rpx; height: 14rpx; }
+.dot4 { left: 90%; top: 26%; width: 10rpx; height: 10rpx; }
+.dot5 { left: 10%; top: 50%; width: 12rpx; height: 12rpx; }
+.dot6 { left: 86%; top: 58%; width: 14rpx; height: 14rpx; }
+.dot7 { left: 26%; top: 76%; width: 10rpx; height: 10rpx; }
+.dot8 { left: 76%; top: 90%; width: 12rpx; height: 12rpx; }
+
+/*远景雪丘：大块极淡白雾团，只做远处层次（透明度低，不压路线与节点）*/
+.hill {
+  position: absolute;
+  z-index: 2;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.hill1 { left: -6%; top: 88%; width: 340rpx; height: 150rpx; }
+.hill2 { left: 74%; top: 96%; width: 300rpx; height: 130rpx; }
+.hill3 { left: 2%; top: 8%; width: 280rpx; height: 120rpx; }
+
+/*冰面色块：极淡冰蓝光斑，给雪地一点反光层次*/
+.icePatch {
+  position: absolute;
+  z-index: 2;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(170, 215, 245, 0.28), rgba(170, 215, 245, 0));
+  pointer-events: none;
+}
+.patch1 { left: 8%; top: 52%; width: 380rpx; height: 220rpx; }
+.patch2 { left: 60%; top: 6%; width: 320rpx; height: 180rpx; }
+
+/*半透明冰雪小径：22rpx宽的淡白半透明带，边缘用光晕模糊
+  （替代旧“一串白色小珠子”，是“小路”不是“水管”）*/
+.trail {
+  position: absolute;
+  z-index: 1;
+  height: 22rpx;
+  border-radius: 11rpx;
+  background: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 0 16rpx 10rpx rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+.t1 { left: 47.5%; top: 72.5%; width: 326rpx; transform: translate(-50%, -50%) rotate(-139deg); }
+.t2 { left: 49%; top: 53.5%; width: 344rpx; transform: translate(-50%, -50%) rotate(-38deg); }
+.t3 { left: 50.5%; top: 34%; width: 334rpx; transform: translate(-50%, -50%) rotate(-138deg); }
+
+/*路线小雪点：每条小径上2个8rpx极小雪点（局部点缀，不连续成珠链）*/
+.pathDot {
+  position: absolute;
+  z-index: 1;
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+}
+.pd1 { left: 55%; top: 76.3%; }
+.pd2 { left: 41.4%; top: 68.7%; }
+.pd3 { left: 41.8%; top: 57.3%; }
+.pd4 { left: 56.2%; top: 49.7%; }
+.pd5 { left: 57.1%; top: 38%; }
+.pd6 { left: 43.9%; top: 30%; }
+
+/*游戏标题：顶部中央轻文字（无胶囊底，总高<100rpx，不抢地图）*/
+.titleBanner {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 12rpx;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+.gameTitle {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2C5A96;
+  line-height: 48rpx;
+  letter-spacing: 3rpx;
+  text-shadow: 0 2rpx 0 rgba(255, 255, 255, 0.85), 0 4rpx 10rpx rgba(60, 110, 170, 0.25);
+}
+.gameSub {
+  font-size: 22rpx;
+  color: #5E8CC0;
+  line-height: 28rpx;
+  margin-top: 2rpx;
+  text-shadow: 0 1rpx 0 rgba(255, 255, 255, 0.8);
+}
+
+/*================ 关卡平台节点：统一规格，平台本身就是关卡 ================*/
+/*锚点：百分比定位 + translate居中；hover反馈单独定义（不能用全局.press，会覆盖居中位移）*/
+.nodeWrap {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+/*节点点击反馈：保留translate居中，叠加轻微缩小*/
+.nodeHover {
+  transform: translate(-50%, -50%) scale(0.97);
+  opacity: 0.92;
+}
+
+/*平台公共样式：统一220x130雪地平台，border-radius 50%（四关完全一致，不各自定义形状）
+  渐变/内外阴影按规范：融入雪地，顶部高光、底部蓝影
+  用margin居中（不用transform），当前关卡的尺寸放大才不冲突*/
+.island {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 220rpx;
+  height: 130rpx;
+  margin-left: -110rpx;
+  margin-top: -65rpx;
+  border: 3rpx solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(245, 251, 255, 0.96) 0%, rgba(208, 232, 247, 0.96) 100%);
+  box-shadow: 0 12rpx 20rpx rgba(55, 130, 190, 0.18),
+              inset 0 4rpx 6rpx rgba(255, 255, 255, 0.9),
+              inset 0 -8rpx 10rpx rgba(92, 161, 207, 0.12);
+  transition: box-shadow 0.2s ease;
+}
+
+/*当前关卡：放大到240x142 + 很淡的冰蓝光晕（不画粗蓝边/按钮focus感），
+  强调靠：更大平台+鲜明数字+小鸟+下方标签+轻微光晕*/
+.island.cur {
+  width: 240rpx;
+  height: 142rpx;
+  margin-left: -120rpx;
+  margin-top: -71rpx;
+  box-shadow: 0 14rpx 26rpx rgba(55, 130, 190, 0.24),
+              0 0 34rpx 10rpx rgba(140, 205, 250, 0.30),
+              inset 0 4rpx 6rpx rgba(255, 255, 255, 0.9),
+              inset 0 -8rpx 10rpx rgba(92, 161, 207, 0.12);
+}
+.island.cur .islandNum {
+  color: #1B5A92;
+}
+
+/*未解锁关卡：保留冰蓝配色，只降透明度0.78（不清灰不降饱和），锁角标表示不可进入*/
+.island.locked {
+  opacity: 0.78;
+}
+
+/*冰面刻字式大数字：深蓝+上下双影，像刻在冰里（统一56rpx/700）*/
+.islandNum {
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #2F7AB8;
+  line-height: 62rpx;
+  text-shadow: 0 2rpx 0 rgba(255, 255, 255, 0.95), 0 -1rpx 3rpx rgba(50, 110, 170, 0.35);
+}
+
+/*关卡名：直接写在平台上（大数字已是关卡号，不重复显示“第X关”）*/
+.labelText {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #4A76A6;
+  line-height: 30rpx;
+  margin-top: 2rpx;
+}
+
+/*星级：紧贴关卡名下方，金色=已获得 浅灰=未获得（无Emoji，统一20rpx）*/
+.starsRow {
+  display: flex;
+  flex-direction: row;
+  margin-top: 6rpx;
+}
+.miniStar {
+  width: 20rpx;
+  height: 20rpx;
+  margin: 0 3rpx;
+  background: #C3D4E4;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.miniStar.on {
+  background: linear-gradient(135deg, #FFE08A 0%, #FFB84D 100%);
+  animation: starPopMini 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+/*星星弹出：缩放+旋转入场（一次性，不持续）*/
+@keyframes starPopMini {
+  0% { transform: scale(0) rotate(-45deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/*锁定角标：所有未解锁关卡统一规格——右上角 right:-10rpx top:-10rpx，40rpx小锁*/
+.lockBadge {
+  position: absolute;
+  right: -10rpx;
+  top: -10rpx;
+  z-index: 4;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FFFFFF 0%, #DCEBFB 100%);
+  border: 3rpx solid #FFFFFF;
+  box-shadow: 0 3rpx 8rpx rgba(45, 95, 150, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lockShackle {
+  position: absolute;
+  top: 8rpx;
+  left: 50%;
+  margin-left: -9rpx;
+  width: 18rpx;
+  height: 11rpx;
+  border: 3rpx solid #6E93BE;
+  border-bottom: none;
+  border-radius: 9rpx 9rpx 0 0;
+  box-sizing: border-box;
+}
+.lockBody {
+  width: 18rpx;
+  height: 13rpx;
+  background: #6E93BE;
+  border-radius: 4rpx;
+  margin-top: 7rpx;
+}
+
+/*当前挑战小标签（z4状态角标）：挂在当前平台正下方22rpx处（平台半高71+22=93）
+  小号胶囊，尺寸缩小，不与星星重叠*/
+.curTag {
+  position: absolute;
+  top: 93rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  background: rgba(90, 156, 214, 0.92);
+  border: 2rpx solid rgba(255, 255, 255, 0.9);
+  border-radius: 999rpx;
+  padding: 4rpx 16rpx;
+  font-size: 18rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+  box-shadow: 0 3rpx 8rpx rgba(60, 110, 170, 0.25);
+  white-space: nowrap;
+}
+
+/*各关唯一主装饰（z2环境层，不是UI信息）：
+  坐标是相对平台中心的rpx偏移，全部留在平台安全区外，
+  与平台边缘保持24~32rpx间距；装饰之间≥20rpx*/
+.decoImg {
+  position: absolute;
+  z-index: 2;
+  width: 48rpx;
+  height: 48rpx;
+  transform: translate(-50%, -50%);
+}
+.dBox { left: -172rpx; top: 40rpx; }
+.dIce { left: -172rpx; top: 35rpx; }
+
+/*第3关危险区：CSS小TNT（本地无tnt.png素材，用极简CSS绘制）*/
+.tnt {
+  position: absolute;
+  z-index: 2;
+  left: -172rpx;
+  top: 20rpx;
+  width: 44rpx;
+  height: 52rpx;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(180deg, #FF8A7A 0%, #E8503F 100%);
+  border: 3rpx solid #FFFFFF;
+  border-radius: 8rpx;
+  box-shadow: 0 6rpx 12rpx rgba(120, 40, 30, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tntText {
+  font-size: 16rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+  letter-spacing: 1rpx;
+}
+
+/*第4关终点旗：插在平台左上外侧的雪地上（细杆+三角旗，border三角不依赖clip-path）*/
+.flagWrap {
+  position: absolute;
+  z-index: 2;
+  left: -172rpx;
+  top: -60rpx;
+  width: 30rpx;
+  height: 48rpx;
+  transform: translate(-50%, -50%);
+}
+.flagPole {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 4rpx;
+  height: 44rpx;
+  background: #FFFFFF;
+  border-radius: 2rpx;
+  box-shadow: 0 2rpx 4rpx rgba(60, 110, 170, 0.3);
+}
+.flagCloth {
+  position: absolute;
+  left: 4rpx;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-left: 26rpx solid #FF8E3C;
+  border-top: 11rpx solid transparent;
+  border-bottom: 11rpx solid transparent;
+}
+
+/*第4关终点Boss小猪（z5角色层）：站在平台右侧（距平台边50rpx），
+  与右上角锁、左上角旗都不重叠；脚下椭圆阴影，不悬空*/
+.pigWrap {
+  position: absolute;
+  z-index: 5;
+  left: 198rpx;
+  top: 45rpx;
+  width: 56rpx;
+  height: 56rpx;
+  transform: translate(-50%, -50%);
+}
+.pig {
+  width: 56rpx;
+  height: 56rpx;
+}
+.pigShadow {
+  position: absolute;
+  left: 50%;
+  top: 50rpx;
+  transform: translateX(-50%);
+  width: 38rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: rgba(70, 110, 160, 0.22);
+}
+
+/*小鸟（z5角色层）：只站在当前推荐关卡旁（JS动态定位），
+  内沿距平台边30rpx；脚下椭圆阴影（不悬空、不浮动）*/
+.birdWrap {
+  position: absolute;
+  z-index: 5;
+  width: 60rpx;
+  height: 66rpx;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+.bird {
+  width: 60rpx;
+  height: 60rpx;
+}
+.birdShadow {
+  position: absolute;
+  left: 50%;
+  top: 60rpx;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: rgba(70, 110, 160, 0.22);
+}
+
+/*================ 底部轻量功能栏：图标+小字 三等分（高约96rpx，统一图标尺寸） ================*/
+/*margin-top:auto：在高于内容高度的屏幕上把功能栏压到底部；小屏时退化为正常间距*/
+.bottomNav {
+  width: 100%;
+  flex-shrink: 0;
+  height: 96rpx;
+  margin-top: auto;
+  display: flex;
+  flex-direction: row;
+  background: rgba(214, 238, 255, 0.55);
+  border: 1rpx solid rgba(255, 255, 255, 0.85);
+  border-radius: 22rpx;
+  box-shadow: 0 6rpx 16rpx rgba(45, 95, 150, 0.10);
+}
+.navBtn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+/*功能栏按压反馈：缩小+下沉*/
+.navPress {
+  transform: scale(0.95) translateY(2rpx);
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.40);
+  border-radius: 22rpx;
+}
+.navIco {
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.navName {
+  margin-top: 4rpx;
+  font-size: 20rpx;
+  color: #4A6FA5;
+}
+.qMark {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #3F7FC4;
+  line-height: 1;
+}
+/*成绩图标：金色CSS星星（仅星星保留clip-path）*/
+.starIcon {
+  width: 28rpx;
+  height: 28rpx;
+  background: linear-gradient(135deg, #FFE08A 0%, #FFB84D 100%);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+/*================ 弹层：冰雪配色覆盖（app.wxss提供结构与动画） ================*/
+.popCard {
+  background: #F7FCFF;
+  border: 2rpx solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24rpx 70rpx rgba(45, 95, 150, 0.35), inset 0 2rpx 0 rgba(255, 255, 255, 0.9);
+}
+.popTitle {
+  color: #2C5A96;
+}
+.popDesc {
+  color: #7E9BC0;
+}
+
+/*登录弹层：昵称输入框（type="nickname"，自动联想微信昵称）*/
+.nickInput {
+  width: 100%;
+  height: 84rpx;
+  margin-top: 24rpx;
+  background: #EAF4FC;
+  border: 2rpx solid #D5E8F8;
+  border-radius: 999rpx;
+  padding: 0 28rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  color: #2C4A73;
+}
+
+/*登录弹层：微信头像选择按钮（官方chooseAvatar）*/
+.avatarPick {
+  width: 160rpx;
+  height: 160rpx;
+  padding: 0;
+  margin-top: 24rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FFFFFF 0%, #BFE2FF 100%);
+  border: 3rpx solid #FFFFFF;
+  box-shadow: 0 8rpx 20rpx rgba(45, 95, 150, 0.22), inset 0 2rpx 0 rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.avatarPick::after {
+  border: none;
+}
+/*选择器打开期间按钮置灰（choosingAvatar锁，提示暂不可重复点击）
+  用class实现，避免属性选择器触发「Some selectors are not allowed in component wxss」*/
+.avatarPickOff {
+  opacity: 0.55;
+}
+.avatarPickImg {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+}
+
+/*玩家中心：大号冰晶圆头像（图片或游客星星）*/
+.playerAvatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FFFFFF 0%, #BFE2FF 100%);
+  border: 3rpx solid #FFFFFF;
+  margin-top: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 8rpx 20rpx rgba(45, 95, 150, 0.22), inset 0 2rpx 0 rgba(255, 255, 255, 0.95);
+}
+.avatarImgBig {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+}
+.playerNick {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2C4A73;
+  margin-top: 20rpx;
+}
+
+/*登录弹层：冒险形象选择*/
+.avatarRow {
+  display: flex;
+  flex-direction: row;
+  margin-top: 16rpx;
+}
+.avatarChoice {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  background: #EAF4FC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 14rpx;
+  border: 4rpx solid transparent;
+  box-sizing: border-box;
+  transition: transform 0.12s ease;
+}
+.avatarChoiceImg {
+  width: 68rpx;
+  height: 68rpx;
+}
+/*选中的形象：冰蓝描边高亮*/
+.avatarChoice.on {
+  border-color: #3F8DE8;
+  background: #DCEFFF;
+  transform: scale(1.06);
+}
+
+/*帮助弹层：规则列表*/
+.helpList {
+  width: 100%;
+  margin-top: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+.helpItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 26rpx;
+  color: #4A6FA5;
+  background: #EAF4FC;
+  border-radius: 16rpx;
+  padding: 16rpx 24rpx;
+  margin: 6rpx 0;
+}
+/*规则条目的小圆点（CSS项目符号）*/
+.helpDot {
+  flex-shrink: 0;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #3F8DE8;
+  margin-right: 16rpx;
+}
+
+/*成绩弹层：各关星级与最佳步数列表*/
+.scoreList {
+  width: 100%;
+  margin-top: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+.scoreItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 26rpx;
+  color: #8A9CB8;
+  background: #EAF4FC;
+  border-radius: 16rpx;
+  padding: 16rpx 24rpx;
+  margin: 6rpx 0;
+}
+/*已完成的关卡高亮为冰蓝*/
+.scoreItem.ok {
+  color: #2C5A96;
+  background: rgba(63, 141, 232, 0.10);
+}
+.scoreName {
+  font-size: 26rpx;
+}
+.scoreRight {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.scoreMiniStars {
+  display: flex;
+  flex-direction: row;
+  margin-right: 12rpx;
+}
+.scoreMiniStars .miniStar {
+  width: 20rpx;
+  height: 20rpx;
+}
+.scoreSteps {
+  font-size: 22rpx;
+  color: #3F7FC4;
+}
+.scoreUndone {
+  font-size: 22rpx;
+  color: #8A9CB8;
+}
+
+/*设置弹层：开关行*/
+.settingRow {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: #EAF4FC;
+  border-radius: 16rpx;
+  padding: 18rpx 24rpx;
+  margin: 8rpx 0;
+}
+.settingName {
+  font-size: 28rpx;
+  color: #2C4A73;
+}

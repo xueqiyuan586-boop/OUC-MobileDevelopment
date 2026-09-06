@@ -1,0 +1,620 @@
+/*游戏页容器：状态栏、冰晶画框、控制器纵向分布，底部预留安全区*/
+.container {
+  padding: 16rpx 32rpx;
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: constant(safe-area-inset-bottom);
+}
+
+/*顶部状态栏：返回按钮 + 关卡信息 + 菜单按钮（磨砂冰晶圆角块）*/
+.statusBar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.iconBtn {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 22rpx;
+  background: rgba(255, 255, 255, 0.55);
+  border: 2rpx solid rgba(255, 255, 255, 0.95);
+  color: #2C5A96;
+  font-size: 42rpx;
+  font-weight: bold;
+  box-shadow: 0 6rpx 14rpx rgba(45, 95, 150, 0.18), inset 0 2rpx 0 rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.statusTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.statusTitle .title {
+  font-size: 40rpx;
+  text-shadow: 0 1rpx 0 rgba(255, 255, 255, 0.9);
+}
+.statusTitle .subtitle {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+}
+
+/*CSS齿轮：虚线齿圈 + 实心轴孔*/
+.gear {
+  width: 32rpx;
+  height: 32rpx;
+  border: 7rpx dashed #2C5A96;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gear::after {
+  content: '';
+  width: 12rpx;
+  height: 12rpx;
+  border: 5rpx solid #2C5A96;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+/*游戏画布冰晶画框：雪白半透明+冰蓝阴影+雪面高光*/
+.boardCard {
+  background: rgba(255, 255, 255, 0.65);
+  border: 2rpx solid rgba(255, 255, 255, 0.95);
+  border-radius: 28rpx;
+  padding: 10rpx;
+  box-shadow: 0 14rpx 36rpx rgba(45, 95, 150, 0.22), inset 0 2rpx 0 rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*游戏画布：保持8x8地图的实际尺寸320px*/
+.board {
+  width: 320px;
+  height: 320px;
+  display: block;
+}
+
+/*滑动操作提示：轻量冰晶小胶囊*/
+.swipeHint {
+  font-size: 22rpx;
+  color: #4A6FA5;
+  background: rgba(255, 255, 255, 0.55);
+  border: 2rpx solid rgba(255, 255, 255, 0.9);
+  padding: 8rpx 24rpx;
+  border-radius: 22rpx;
+}
+
+/*步数统计：冰蓝胶囊*/
+.infoRow {
+  display: flex;
+  flex-direction: row;
+}
+.stepsText {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #2C5A96;
+  background: rgba(255, 255, 255, 0.65);
+  border: 2rpx solid rgba(255, 255, 255, 0.92);
+  padding: 8rpx 28rpx;
+  border-radius: 26rpx;
+  box-shadow: 0 4rpx 10rpx rgba(45, 95, 150, 0.12);
+}
+
+/*小提示：暖黄半透明胶囊*/
+.tipLine {
+  font-size: 22rpx;
+  color: #8A6A3B;
+  background: rgba(255, 232, 178, 0.65);
+  border: 2rpx solid rgba(255, 244, 214, 0.9);
+  padding: 8rpx 24rpx;
+  border-radius: 22rpx;
+}
+
+/*================ 方向键：冰晶十字D-pad ================*/
+/*面板：半透明冰蓝磨砂圆角容器*/
+.dpadPanel {
+  background: rgba(255, 255, 255, 0.4);
+  border: 2rpx solid rgba(255, 255, 255, 0.85);
+  border-radius: 44rpx;
+  padding: 16rpx 20rpx;
+  box-shadow: 0 12rpx 30rpx rgba(45, 95, 150, 0.2), inset 0 2rpx 0 rgba(255, 255, 255, 0.8);
+}
+.dpadRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+/*方向键：冰蓝渐变立体按键（白色描边+底部厚边阴影+雪面高光）*/
+.dpad {
+  width: 104rpx;
+  height: 104rpx;
+  padding: 0;
+  margin: 6rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(160deg, #F2FAFF 0%, #BFE2FF 55%, #8CCBFF 100%);
+  border: 2rpx solid #FFFFFF;
+  color: #1F5FA8;
+  font-size: 44rpx;
+  font-weight: bold;
+  line-height: 104rpx;
+  text-align: center;
+  text-shadow: 0 1rpx 0 rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8rpx 0 rgba(31, 95, 168, 0.30), 0 12rpx 20rpx rgba(45, 95, 150, 0.25), inset 0 3rpx 0 rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.dpad::after {
+  border: none;
+}
+
+/*方向键按下：下沉+阴影压缩，像真实按键被按进去*/
+.dpadHover {
+  transform: translateY(6rpx);
+  box-shadow: 0 2rpx 0 rgba(31, 95, 168, 0.30), 0 6rpx 12rpx rgba(45, 95, 150, 0.25), inset 0 3rpx 0 rgba(255, 255, 255, 0.9);
+}
+
+/*中间装饰圆点（不可点击）：冰晶凸钮+内点*/
+.dpadCore {
+  width: 44rpx;
+  height: 44rpx;
+  margin: 0 10rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  border: 2rpx solid #FFFFFF;
+  box-shadow: inset 0 3rpx 6rpx rgba(63, 141, 232, 0.35), 0 4rpx 10rpx rgba(45, 95, 150, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dpadCoreDot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #BFE2FF 0%, #6FB6F5 100%);
+  box-shadow: inset 0 2rpx 2rpx rgba(255, 255, 255, 0.8);
+}
+
+/*演示进行中：当前步骤方向键金黄高亮*/
+.dpadLit {
+  background: linear-gradient(160deg, #FFF3D6 0%, #FFD25E 55%, #FFA43C 100%);
+  border-color: #FFE9B3;
+  color: #FFFFFF;
+  text-shadow: 0 1rpx 2rpx rgba(200, 110, 20, 0.4);
+  box-shadow: 0 8rpx 0 rgba(214, 130, 30, 0.35), 0 12rpx 20rpx rgba(255, 170, 60, 0.35), inset 0 3rpx 0 rgba(255, 255, 255, 0.8);
+}
+
+/*================ 操作行：撤销 / 提示 / 重来 ================*/
+.actionRow {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+/*浅蓝灰冰晶胶囊*/
+.actionBtn {
+  flex: 1;
+  height: 76rpx;
+  margin: 0 8rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9) 0%, rgba(203, 224, 244, 0.9) 100%);
+  border: 2rpx solid rgba(255, 255, 255, 0.95);
+  color: #4A6FA5;
+  font-size: 26rpx;
+  font-weight: bold;
+  box-shadow: 0 6rpx 14rpx rgba(45, 95, 150, 0.18), inset 0 2rpx 0 rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, opacity 0.12s ease, box-shadow 0.12s ease;
+}
+.actionBtn::after {
+  border: none;
+}
+/*提示按钮：金黄高亮（渐变+发光+占比更大），比撤销/重来更突出*/
+.actionHint {
+  flex: 1.2;
+  background: linear-gradient(135deg, #FFD25E 0%, #FFA43C 100%);
+  border-color: #FFE9B3;
+  color: #FFFFFF;
+  text-shadow: 0 1rpx 2rpx rgba(200, 110, 20, 0.4);
+  box-shadow: 0 6rpx 16rpx rgba(255, 170, 60, 0.45), inset 0 2rpx 0 rgba(255, 255, 255, 0.75);
+}
+/*无可撤销历史时按钮置灰（用class实现，避免属性选择器）*/
+.actionBtnOff {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #B9CCE0;
+  box-shadow: none;
+}
+/*撤销/重来的Unicode简单符号*/
+.glyph {
+  font-size: 30rpx;
+  margin-right: 8rpx;
+  line-height: 1;
+}
+/*提示按钮内的灯泡图标（白描边样式）*/
+.actionIco {
+  margin-right: 8rpx;
+}
+
+/*================ 胜利弹层：紧凑冰晶奖励卡 ================*/
+/*更窄更紧凑，整体高度约为屏幕的40%左右*/
+.winCard {
+  width: 520rpx;
+  padding: 44rpx 32rpx 36rpx;
+}
+.winTitle {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #2C5A96;
+  letter-spacing: 2rpx;
+  text-shadow: 0 1rpx 0 rgba(255, 255, 255, 0.9);
+}
+
+/*三颗CSS星星：初始缩小隐藏，.show触发逐颗弹出动画；.lit点亮金色，未点亮保持灰蓝*/
+.winStarsRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 18rpx;
+  margin-top: 26rpx;
+}
+.winStar {
+  width: 88rpx;
+  height: 88rpx;
+  background: #C9DCEF;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  transform: scale(0);
+}
+.winStar.lit {
+  background: linear-gradient(135deg, #FFE08A 0%, #FFB84D 100%);
+}
+.winStar.show {
+  animation: starPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+/*星星弹出：0->放大1.25->回落到1，带轻微旋转，像手游结算动画*/
+@keyframes starPop {
+  0% { transform: scale(0) rotate(-60deg); }
+  60% { transform: scale(1.25) rotate(8deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/*本局/最佳步数：并排两条冰蓝胶囊，数字橙色突出*/
+.winSteps {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 14rpx;
+  margin-top: 26rpx;
+}
+.winStepLine {
+  font-size: 24rpx;
+  color: #4A6FA5;
+  background: #EAF4FC;
+  border: 1rpx solid #D5E8F8;
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
+}
+.winStepNum {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #FF8E3C;
+}
+
+/*主按钮“下一关”与底部按钮行*/
+.winNext {
+  margin-top: 26rpx;
+}
+.winBtns {
+  width: 100%;
+  margin-top: 8rpx;
+  display: flex;
+  flex-direction: row;
+  gap: 16rpx;
+}
+.winHalf {
+  flex: 1;
+}
+
+/*================ 弹层内CSS图标库（无Emoji） ================*/
+/*图标底座：雪白圆盘+冰蓝描边*/
+.popIco {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2rpx solid #E3F1FC;
+  box-shadow: 0 8rpx 18rpx rgba(45, 95, 150, 0.18), inset 0 2rpx 0 rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/*灯泡：金色圆泡+底座+反光点*/
+.icoBulb {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFE08A 0%, #FFB84D 100%);
+  position: relative;
+  box-shadow: 0 4rpx 12rpx rgba(255, 184, 77, 0.45);
+}
+.icoBulb::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -12rpx;
+  transform: translateX(-50%);
+  width: 22rpx;
+  height: 10rpx;
+  background: #FFB84D;
+  border-radius: 0 0 10rpx 10rpx;
+}
+.icoBulb::before {
+  content: '';
+  position: absolute;
+  left: 12rpx;
+  top: 12rpx;
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+}
+/*警示：金色三角+感叹号*/
+.icoAlert {
+  width: 44rpx;
+  height: 38rpx;
+  background: linear-gradient(135deg, #FFD25E 0%, #FFA43C 100%);
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  position: relative;
+}
+.icoAlert::after {
+  content: '!';
+  position: absolute;
+  left: 50%;
+  top: 12rpx;
+  transform: translateX(-50%);
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+  line-height: 1;
+}
+/*星星：金色CSS星星*/
+.icoStar {
+  width: 48rpx;
+  height: 48rpx;
+  background: linear-gradient(135deg, #FFE08A 0%, #FFB84D 100%);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+/*思考：三个冰蓝圆点*/
+.icoDots {
+  width: 52rpx;
+  height: 18rpx;
+  background:
+    radial-gradient(circle 9rpx at 9rpx 9rpx, #6E93BE 98%, transparent),
+    radial-gradient(circle 9rpx at 26rpx 9rpx, #6E93BE 98%, transparent),
+    radial-gradient(circle 9rpx at 43rpx 9rpx, #6E93BE 98%, transparent);
+}
+/*书本：蓝色封面+中缝*/
+.icoBook {
+  width: 44rpx;
+  height: 34rpx;
+  background: linear-gradient(90deg, #3F8DE8 0 46%, #8CCBFF 46% 54%, #3F8DE8 54% 100%);
+  border-radius: 5rpx 9rpx 9rpx 5rpx;
+  position: relative;
+}
+.icoBook::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 3rpx;
+  bottom: 3rpx;
+  width: 3rpx;
+  margin-left: -1.5rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 2rpx;
+}
+/*地图定位针：水滴形+白孔*/
+.icoPin {
+  width: 30rpx;
+  height: 30rpx;
+  background: linear-gradient(135deg, #7EC8FF 0%, #3F8DE8 100%);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  position: relative;
+  margin-bottom: 6rpx;
+}
+.icoPin::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #FFFFFF;
+}
+/*方向箭头：右上小箭头（下一步提示）*/
+.icoArrow {
+  width: 16rpx;
+  height: 16rpx;
+  border-top: 9rpx solid #3F7FC4;
+  border-right: 9rpx solid #3F7FC4;
+  transform: rotate(45deg);
+}
+/*播放三角：currentColor随按钮换色*/
+.icoPlay {
+  width: 0;
+  height: 0;
+  border-top: 13rpx solid transparent;
+  border-bottom: 13rpx solid transparent;
+  border-left: 21rpx solid currentColor;
+  margin-left: 5rpx;
+}
+/*暂停：双竖条*/
+.icoPause {
+  width: 20rpx;
+  height: 24rpx;
+  background: linear-gradient(to right, currentColor 0 7rpx, transparent 7rpx 13rpx, currentColor 13rpx 20rpx);
+}
+/*停止：圆角方块*/
+.icoStop {
+  width: 22rpx;
+  height: 22rpx;
+  background: currentColor;
+  border-radius: 5rpx;
+}
+
+/*带小图标的弹层按钮：图标+文字水平居中*/
+.iconRow {
+  line-height: normal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+/*新手教程列表*/
+.tutList {
+  width: 100%;
+  margin-top: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+.tutItem {
+  font-size: 26rpx;
+  color: #4A6FA5;
+  background: #EAF4FC;
+  border-radius: 16rpx;
+  padding: 16rpx 24rpx;
+  margin: 6rpx 0;
+}
+
+/*游戏菜单卡片：更窄的小卡片*/
+.menuCard {
+  width: 400rpx;
+  padding: 20rpx;
+}
+.menuItem {
+  font-size: 28rpx;
+  color: #2C5A96;
+  padding: 24rpx 28rpx;
+  margin: 6rpx 0;
+  background: #EAF4FC;
+  border-radius: 20rpx;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+/*本关提示：进度小标签 + 提示文字卡片*/
+.hintProgress {
+  font-size: 24rpx;
+  color: #FF8E3C;
+  margin-top: 12rpx;
+}
+.hintText {
+  width: 100%;
+  font-size: 28rpx;
+  color: #4A6FA5;
+  background: #EAF4FC;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-sizing: border-box;
+  margin-top: 16rpx;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/*下一步提示：大号方向箭头（轻微上下浮动，吸引视线）*/
+.bigArrow {
+  font-size: 128rpx;
+  line-height: 1;
+  color: #FF8E3C;
+  margin-top: 20rpx;
+  animation: arrowBounce 0.7s ease infinite;
+}
+@keyframes arrowBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12rpx); }
+}
+
+/*================ 动态演示：底部固定冰晶控制条 ================*/
+.demoBar {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: calc(env(safe-area-inset-bottom) + 24rpx);
+  background: rgba(255, 255, 255, 0.88);
+  border: 2rpx solid rgba(255, 255, 255, 0.95);
+  border-radius: 36rpx;
+  box-shadow: 0 12rpx 32rpx rgba(45, 95, 150, 0.3), inset 0 2rpx 0 rgba(255, 255, 255, 0.9);
+  padding: 18rpx 26rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  z-index: 100;
+}
+.demoInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.demoCount {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #2C5A96;
+}
+.demoDir {
+  font-size: 22rpx;
+  color: #FF8E3C;
+  margin-top: 4rpx;
+}
+.demoBtns {
+  display: flex;
+  flex-direction: row;
+}
+/*演示控制按钮：与游戏控制一致的冰晶胶囊（含小图标）*/
+.demoBtn {
+  height: 64rpx;
+  padding: 0 24rpx;
+  margin-left: 14rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(160deg, #F2FAFF 0%, #BFE2FF 100%);
+  border: 2rpx solid #FFFFFF;
+  color: #2C5A96;
+  font-size: 24rpx;
+  font-weight: bold;
+  line-height: normal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10rpx;
+  box-shadow: 0 4rpx 10rpx rgba(45, 95, 150, 0.2), inset 0 2rpx 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.demoBtn::after {
+  border: none;
+}
+/*停止按钮：浅红冰晶胶囊*/
+.demoBtnStop {
+  background: linear-gradient(160deg, #FFE8E2 0%, #FFB4A6 100%);
+  border-color: #FFD9CF;
+  color: #D84A3C;
+}
+
+/*演示进行中：容器底部留出控制条空间，避免遮挡操作区*/
+.container.demoOn {
+  padding-bottom: 220rpx;
+}

@@ -1,0 +1,126 @@
+<view class="detail-page">
+
+  <!-- 文章 -->
+  <view class="article">
+
+    <!-- 标题：左对齐 -->
+    <text class="article-title">
+      {{article.title}}
+    </text>
+
+
+    <!-- 来源与日期 -->
+    <view class="article-meta">
+
+      <text class="source">
+        校园新闻网
+      </text>
+
+      <text class="dot">
+        ·
+      </text>
+
+      <text class="date">
+        {{article.add_date}}
+      </text>
+
+    </view>
+
+
+    <!-- 分割线 -->
+    <view class="divider"></view>
+
+
+    <!-- 新闻图片：宽度自适应 -->
+    <image
+      class="article-image"
+      src="{{article.poster}}"
+      mode="widthFix"
+    ></image>
+
+
+    <!-- 正文 -->
+    <view class="article-content">
+
+      <text user-select>
+        {{article.content}}
+      </text>
+
+    </view>
+
+
+    <!-- 上一篇 / 下一篇 -->
+    <view class="pager">
+
+      <view
+        wx:if="{{prevNews}}"
+        class="pager-row"
+        hover-class="pager-row-hover"
+        bindtap="goPrev"
+        data-id="{{prevNews.id}}"
+      >
+        <text class="pager-label">上一篇</text>
+        <text class="pager-title">{{prevNews.title}}</text>
+      </view>
+
+      <view
+        wx:if="{{nextNews}}"
+        class="pager-row"
+        hover-class="pager-row-hover"
+        bindtap="goNext"
+        data-id="{{nextNews.id}}"
+      >
+        <text class="pager-label">下一篇</text>
+        <text class="pager-title">{{nextNews.title}}</text>
+      </view>
+
+    </view>
+
+
+    <!-- 底部信息 -->
+    <view class="article-footer">
+
+      <view class="footer-line"></view>
+
+      <text class="footer-text">
+        内容来源：校园新闻网
+      </text>
+
+    </view>
+
+  </view>
+
+
+  <!-- =========================
+       底部固定操作栏
+       ========================= -->
+  <view class="bottom-bar">
+
+    <view
+      class="bar-action"
+      hover-class="bar-action-hover"
+      bindtap="goHome"
+    >
+      <view class="home-icon"></view>
+      <text class="bar-text">返回首页</text>
+    </view>
+
+    <view class="bar-divider"></view>
+
+    <view
+      class="bar-action"
+      hover-class="bar-action-hover"
+      bindtap="{{isAdd ? 'cancelFavorites' : 'addFavorites'}}"
+    >
+      <text class="star-icon {{isAdd ? 'star-active' : ''}}">
+        {{isAdd ? '★' : '☆'}}
+      </text>
+
+      <text class="bar-text {{isAdd ? 'bar-text-active' : ''}}">
+        {{isAdd ? '已收藏' : '收藏'}}
+      </text>
+    </view>
+
+  </view>
+
+</view>

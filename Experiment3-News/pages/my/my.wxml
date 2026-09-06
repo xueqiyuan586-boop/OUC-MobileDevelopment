@@ -1,0 +1,467 @@
+<view class="page">
+
+<!-- =========================
+     用户信息
+     ========================= -->
+<view class="user-section">
+
+  <!-- 已登录 -->
+  <view
+    wx:if="{{isLogin}}"
+    class="user-row"
+  >
+
+    <image
+      class="user-avatar"
+      src="{{src}}"
+      mode="aspectFill"
+    ></image>
+
+    <view class="user-info">
+
+      <text class="user-name">
+        {{nickName}}
+      </text>
+
+      <text class="user-desc">
+        欢迎阅读校园新闻
+      </text>
+
+    </view>
+
+  </view>
+
+
+  <!-- 未登录 -->
+  <view
+    wx:else
+    class="login-area"
+  >
+
+    <!-- 第一行：头像 + 昵称输入区（登录按钮不参与本行） -->
+    <view class="login-row">
+
+      <button
+        class="avatar-button"
+        open-type="chooseAvatar"
+        bindchooseavatar="onChooseAvatar"
+      >
+
+        <image
+          wx:if="{{src}}"
+          class="user-avatar"
+          src="{{src}}"
+          mode="aspectFill"
+        ></image>
+
+        <view
+          wx:else
+          class="avatar-empty"
+        ></view>
+
+      </button>
+
+
+      <view class="login-info">
+
+        <input
+          class="nickname-input"
+          type="nickname"
+          value="{{nickName}}"
+          placeholder="点击设置微信昵称"
+          placeholder-class="nickname-placeholder"
+          maxlength="20"
+          bindinput="onNicknameChange"
+          bindblur="onNicknameChange"
+        />
+
+        <text class="login-tip">
+          选择头像和昵称后即可登录
+        </text>
+
+      </view>
+
+    </view>
+
+
+    <!-- 第二行：轻量胶囊登录按钮，左对齐昵称区域 -->
+    <button
+      class="login-btn"
+      hover-class="login-btn-hover"
+      bindtap="login"
+    >
+      登录
+    </button>
+
+  </view>
+
+</view>
+
+
+<!-- =========================
+     我的喜欢
+     ========================= -->
+<view class="section">
+
+  <view class="section-title-row">
+
+    <view class="red-line"></view>
+
+    <text class="section-title">
+      我的喜欢
+    </text>
+
+  </view>
+
+
+  <!-- 未登录 -->
+  <view
+    wx:if="{{!isLogin}}"
+    class="empty empty-small"
+  >
+
+    <text class="empty-icon">♡</text>
+
+    <text class="empty-title">
+      请先登录
+    </text>
+
+    <text class="empty-desc">
+      登录后即可查看喜欢的新闻
+    </text>
+
+  </view>
+
+
+  <!-- 已登录但没有喜欢 -->
+  <view
+    wx:elif="{{likeList.length == 0}}"
+    class="empty"
+  >
+
+    <text class="empty-icon">♡</text>
+
+    <text class="empty-title">
+      暂无喜欢
+    </text>
+
+    <text class="empty-desc">
+      去首页给喜欢的新闻点个赞吧
+    </text>
+
+    <button
+      class="home-btn"
+      bindtap="goHome"
+    >
+      去首页
+    </button>
+
+  </view>
+
+
+  <!-- 喜欢列表：左滑取消喜欢 -->
+  <view
+    wx:else
+  >
+
+    <view
+      class="swipe-item"
+      wx:for="{{likeList}}"
+      wx:key="id"
+    >
+
+      <!-- 左滑露出的红色取消喜欢按钮 -->
+      <view
+        class="delete-btn"
+        catchtap="cancelLike"
+        data-id="{{item.id}}"
+      >
+        取消喜欢
+      </view>
+
+
+      <!-- 新闻主体 -->
+      <view
+        class="news-item"
+        style="transform: translateX({{item.offsetX || 0}}rpx);"
+        bindtouchstart="touchStart"
+        bindtouchmove="touchMove"
+        bindtouchend="touchEnd"
+        bindtap="goToDetail"
+        data-list="likeList"
+        data-index="{{index}}"
+        data-id="{{item.id}}"
+      >
+
+        <view class="news-content">
+
+          <text class="news-title">
+            {{item.title}}
+          </text>
+
+          <text class="news-date">
+            {{item.add_date}}
+          </text>
+
+        </view>
+
+
+        <image
+          class="news-image"
+          src="{{item.poster}}"
+          mode="aspectFill"
+        ></image>
+
+      </view>
+
+    </view>
+
+  </view>
+
+</view>
+
+
+<!-- =========================
+     我的收藏
+     ========================= -->
+<view class="section">
+
+  <view class="section-title-row">
+
+    <view class="red-line"></view>
+
+    <text class="section-title">
+      我的收藏
+    </text>
+
+  </view>
+
+
+  <!-- 未登录 -->
+  <view
+    wx:if="{{!isLogin}}"
+    class="empty empty-small"
+  >
+
+    <text class="empty-icon">☆</text>
+
+    <text class="empty-title">
+      请先登录
+    </text>
+
+    <text class="empty-desc">
+      登录后即可查看收藏内容
+    </text>
+
+  </view>
+
+
+  <!-- 已登录但没有收藏 -->
+  <view
+    wx:elif="{{number == 0}}"
+    class="empty"
+  >
+
+    <text class="empty-icon">☆</text>
+
+    <text class="empty-title">
+      暂无收藏
+    </text>
+
+    <text class="empty-desc">
+      去首页看看感兴趣的新闻吧
+    </text>
+
+    <button
+      class="home-btn"
+      bindtap="goHome"
+    >
+      去首页
+    </button>
+
+  </view>
+
+
+  <!-- 收藏列表：左滑取消收藏 -->
+  <view
+    wx:else
+  >
+
+    <view
+      class="swipe-item"
+      wx:for="{{newsList}}"
+      wx:key="id"
+    >
+
+      <!-- 左滑露出的红色取消收藏按钮 -->
+      <view
+        class="delete-btn"
+        catchtap="cancelFavorite"
+        data-id="{{item.id}}"
+      >
+        取消收藏
+      </view>
+
+
+      <!-- 新闻主体 -->
+      <view
+        class="news-item"
+        style="transform: translateX({{item.offsetX || 0}}rpx);"
+        bindtouchstart="touchStart"
+        bindtouchmove="touchMove"
+        bindtouchend="touchEnd"
+        bindtap="goToDetail"
+        data-list="newsList"
+        data-index="{{index}}"
+        data-id="{{item.id}}"
+      >
+
+        <view class="news-content">
+
+          <text class="news-title">
+            {{item.title}}
+          </text>
+
+          <text class="news-date">
+            {{item.add_date}}
+          </text>
+
+        </view>
+
+
+        <image
+          class="news-image"
+          src="{{item.poster}}"
+          mode="aspectFill"
+        ></image>
+
+      </view>
+
+    </view>
+
+  </view>
+
+</view>
+
+
+<!-- =========================
+     我的足迹
+     ========================= -->
+<view class="section">
+
+  <view class="section-title-row">
+
+    <view class="red-line"></view>
+
+    <text class="section-title">
+      我的足迹
+    </text>
+
+    <text
+      wx:if="{{isLogin && historyList.length > 0}}"
+      class="clear-history"
+      bindtap="clearHistory"
+    >
+      清空历史
+    </text>
+
+  </view>
+
+
+  <!-- 未登录 -->
+  <view
+    wx:if="{{!isLogin}}"
+    class="empty empty-small"
+  >
+
+    <view class="history-icon"></view>
+
+    <text class="empty-title">
+      请先登录
+    </text>
+
+    <text class="empty-desc">
+      登录后即可查看浏览足迹
+    </text>
+
+  </view>
+
+
+  <!-- 已登录但没历史 -->
+  <view
+    wx:elif="{{historyList.length == 0}}"
+    class="empty"
+  >
+
+    <view class="history-icon"></view>
+
+    <text class="empty-title">
+      暂无浏览足迹
+    </text>
+
+    <text class="empty-desc">
+      看过的新闻会出现在这里
+    </text>
+
+  </view>
+
+
+  <!-- 浏览历史列表 -->
+  <view
+    wx:else
+  >
+
+    <view
+      class="history-item"
+      wx:for="{{historyList}}"
+      wx:key="id"
+      hover-class="history-item-hover"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+
+      <view class="news-content">
+
+        <text class="news-title">
+          {{item.title}}
+        </text>
+
+        <text class="news-date">
+          {{item.add_date}}
+        </text>
+
+      </view>
+
+
+      <image
+        class="news-image"
+        src="{{item.poster}}"
+        mode="aspectFill"
+      ></image>
+
+    </view>
+
+  </view>
+
+</view>
+
+
+<!-- =========================
+     退出登录（仅登录后显示）
+     ========================= -->
+<view
+  wx:if="{{isLogin}}"
+  class="logout-section"
+>
+
+  <view
+    class="logout-row"
+    hover-class="logout-row-hover"
+    bindtap="logout"
+  >
+    退出登录
+  </view>
+
+</view>
+
+</view>
